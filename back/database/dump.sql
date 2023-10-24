@@ -1,48 +1,40 @@
-CREATE TABLE "users"(
-    "id" BIGINT NOT NULL AUTO_INCREMENT,
+CREATE TABLE "user" (
+    "id" SERIAL PRIMARY KEY,
     "pwd" VARCHAR(255) NOT NULL,
-    "name" VARCHAR(255) NULL,
-    "profilePic" VARCHAR(255) NULL
+    "name" VARCHAR(255),
+    "profilePic" VARCHAR(255)
 );
-ALTER TABLE
-    "users" ADD PRIMARY KEY("id");
 
-CREATE TABLE "conversations"(
-    "id" BIGINT NOT NULL AUTO_INCREMENT,
-    "name" VARCHAR(255) NULL,
-    "convPic" VARCHAR(255) NULL,
+CREATE TABLE "conversation" (
+    "id" SERIAL PRIMARY KEY,
+    "name" VARCHAR(255),
+    "convPic" VARCHAR(255),
     "adminId" BIGINT NOT NULL,
     "updatedAt" DATE NOT NULL
 );
-ALTER TABLE
-    "conversations" ADD PRIMARY KEY("id");
 
-CREATE TABLE "conversationUsers"(
-    "id" BIGINT NOT NULL AUTO_INCREMENT,
+CREATE TABLE "conversationUser" (
+    "id" SERIAL PRIMARY KEY,
     "convId" BIGINT NOT NULL,
     "userId" BIGINT NOT NULL
 );
-ALTER TABLE
-    "conversationUsers" ADD PRIMARY KEY("id");
 
-CREATE TABLE "messages"(
-    "id" BIGINT NOT NULL AUTO_INCREMENT,
+CREATE TABLE "message" (
+    "id" SERIAL PRIMARY KEY,
     "convId" BIGINT NOT NULL,
     "userId" BIGINT NOT NULL,
-    "content" TEXT NULL,
-    "link" VARCHAR(255) NULL,
+    "content" TEXT,
+    "link" VARCHAR(255),
     "updatedAt" DATE NOT NULL
 );
-ALTER TABLE
-    "messages" ADD PRIMARY KEY("id");
 
 ALTER TABLE
-    "conversationUsers" ADD CONSTRAINT "conversationusers_userid_foreign" FOREIGN KEY("userId") REFERENCES "users"("id");
+    "conversationUser" ADD CONSTRAINT "conversationusers_userid_foreign" FOREIGN KEY("userId") REFERENCES "user"("id");
 ALTER TABLE
-    "messages" ADD CONSTRAINT "messages_convid_foreign" FOREIGN KEY("convId") REFERENCES "conversations"("id");
+    "message" ADD CONSTRAINT "messages_convid_foreign" FOREIGN KEY("convId") REFERENCES "conversation"("id");
 ALTER TABLE
-    "messages" ADD CONSTRAINT "messages_userid_foreign" FOREIGN KEY("userId") REFERENCES "users"("id");
+    "message" ADD CONSTRAINT "messages_userid_foreign" FOREIGN KEY("userId") REFERENCES "user"("id");
 ALTER TABLE
-    "conversations" ADD CONSTRAINT "conversations_adminid_foreign" FOREIGN KEY("adminId") REFERENCES "users"("id");
+    "conversation" ADD CONSTRAINT "conversations_adminid_foreign" FOREIGN KEY("adminId") REFERENCES "user"("id");
 ALTER TABLE
-    "conversationUsers" ADD CONSTRAINT "conversationusers_convid_foreign" FOREIGN KEY("convId") REFERENCES "conversations"("id");
+    "conversationUser" ADD CONSTRAINT "conversationusers_convid_foreign" FOREIGN KEY("convId") REFERENCES "conversation"("id");
