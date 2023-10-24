@@ -1,0 +1,18 @@
+version: '3.1'
+
+services:
+
+#postgres :
+  db:
+    image: postgres:15
+    container_name: postgre_db
+    restart: always
+    environment:
+      POSTGRES_DB: CHAT
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+volumes:
+  db-data:
