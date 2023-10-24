@@ -12,7 +12,4 @@ services:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
     volumes:
-      - db-data:/var/lib/postgresql/data
-
-volumes:
-  db-data:
+      - ./database/dump.sql:/docker-entrypoint-initdb.d/dump.sql
