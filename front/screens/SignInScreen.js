@@ -1,0 +1,101 @@
+import { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  SafeAreaView,
+} from "react-native";
+import { makeLoginRequest, handleLoginSuccess } from '../api/SignInApi';
+import { handleLoginError } from '../utils/errorController';
+
+export default function SignInScreen({ navigation, route }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  
+  const handleLogin = async () => {
+    try {
+      const data = await makeLoginRequest(email, password);
+      if (data.ok) {
+        handleLoginError(data.error);
+        return;
+      } else {
+        handleLoginSuccess(data.user, navigation);
+      }
+    } catch (error) {
+      handleLoginError(error);
+    }
+  };
+  
+  return (
+    <SafeAreaView
+      style={styles.pageStyle}
+    >
+      <Text style={styles.titlePage}>Hechat</Text>
+      <View style={styles.formContainer}>
+        <Text style={styles.textTitleInput}>Email</Text>
+        <TextInput
+          style={styles.input}
+          onChangeText={setEmail}
+          placeholder="Email"
+        />
+        <Text style={styles.textTitleInput}>Mot de passe</Text>
+        <TextInput
+          style={styles.input}
+          onChangeText={setPassword}
+          placeholder="Mot de passe"
+          secureTextEntry={true}
+        />
+        <TouchableOpacity
+          onPress={() => handleLogin()}
+          style={styles.appButtonContainer}
+        >
+          <Text style={styles.appButtonText}>CONNECTER</Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  pageStyle: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 20,
+  },
+  titlePage: {
+    fontSize: 40,
+    fontWeight: "bold",
+    marginBottom: 40,
+  },
+  formContainer:{
+    width: '100%',
+  },
+  textTitleInput:{
+    marginBottom: 8,
+    fontWeight:"bold",
+  },
+  input: {
+    padding: 10,
+    backgroundColor: "#E5E5E5",
+    width: '100%',
+    borderRadius: 8,
+    marginBottom: 20,
+  },
+  appButtonContainer: {
+    backgroundColor: "#F3B852",
+    borderRadius: 8,
+    paddingVertical: 12,
+    marginTop:40,
+    width: '100%',
+  },
+  appButtonText: {
+    fontSize: 16,
+    color: "#fff",
+    fontWeight: "bold",
+    alignSelf: "center",
+    textTransform: "uppercase",
+  },
+});

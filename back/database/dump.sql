@@ -85,6 +85,7 @@ VALUES ('azertyuiop', 'FakeUser8', '', 'fakeuser8@mail.com');
 INSERT INTO "user" ("pwd", "name", "profilePic", "email")
 VALUES ('azertyuiop', 'FakeUser9', '', 'fakeuser9@mail.com');
 
+<<<<<<< HEAD
 INSERT INTO "conversation" ("name", "adminId", "updatedAt" )
 VALUES ('conv1', 2, now());
 
@@ -126,3 +127,7 @@ LEFT JOIN (
 ) AS m ON m."convId" = c."id"
 WHERE c."id" IN (SELECT "convId" FROM "conversationUser" WHERE "userId" = 2)
 ORDER BY m."updatedAt" DESC;
+=======
+INSERT INTO "user" ("pwd", "name", "profilePic", "email")
+VALUES ('az', 'az', '', 'az');
+>>>>>>> eaa4449 (wip: login back)

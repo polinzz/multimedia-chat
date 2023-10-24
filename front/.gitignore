@@ -31,7 +31,10 @@ yarn-error.*
 # local env files
 .env*.local
 config.json
+<<<<<<< HEAD
 config.exemple.json
+=======
+>>>>>>> eaa4449 (wip: login back)
 
 # typescript
 *.tsbuildinfo

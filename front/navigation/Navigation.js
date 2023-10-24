@@ -10,6 +10,13 @@ export default function () {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Conversations">
+        <Stack.Screen
+          name="SingIn"
+          component={SignInScreen}
+          options={{
+            headerShown: false,
+          }}
+        />
         <Stack.Screen name="Conversations" component={ConversationScreen} />
         <Stack.Screen name="Messages" component={MessageScreen} />
       </Stack.Navigator>

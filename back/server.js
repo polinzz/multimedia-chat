@@ -4,7 +4,10 @@ import userRoute from './routes/user.js';
 import convRoute from './routes/conv.js';
 import messageRoute from './routes/message.js';
 import fastifyPostgres from "@fastify/postgres";
+<<<<<<< HEAD
 import cors from "@fastify/cors";
+=======
+>>>>>>> eaa4449 (wip: login back)
 import config from './config.json' assert { type: 'json' };
 
 const hostMyIp = config.hostMyIp;
@@ -35,9 +38,13 @@ fastify.get('/user/:id', function (req, reply) {
 })
 
 try {
+<<<<<<< HEAD
   await fastify.listen({port: 4499, host: hostMyIp})
+=======
+  await fastify.listen({ port: 4499, host: hostMyIp })
+  // await fastify.listen({ port: 4499, host: '192.168.43.21' })
+>>>>>>> eaa4449 (wip: login back)
 } catch (err) {
   fastify.log.error(err)
   process.exit(1)
 }
-
