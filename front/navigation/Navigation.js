@@ -9,9 +9,9 @@ const Stack = createNativeStackNavigator();
 export default function () {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="ConversationScreen">
-        <Stack.Screen name="ConversationScreen" component={ConversationScreen} />
-        <Stack.Screen name="MessageScreen" component={MessageScreen} />
+      <Stack.Navigator initialRouteName="Conversations">
+        <Stack.Screen name="Conversations" component={ConversationScreen} />
+        <Stack.Screen name="Messages" component={MessageScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

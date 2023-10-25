@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
-import {apiUrlMyIp} from '../config.local.json';
+import config from '../config.local.json';
 
 export default function ({ navigation }) {
+  const apiUrlMyIp = config.apiUrlMyIp;
   const [conversations, setConversations] = useState([]);
 
   useEffect(() => {
@@ -31,7 +32,7 @@ export default function ({ navigation }) {
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate('MessageScreen', {
+              navigation.navigate('Messages', {
                 conversationId: item.id,
               });
             }}
