@@ -16,10 +16,10 @@ Une application de chat multimedia en temps réel développée avec Node.js, Rea
 - Expo
 
 ## Installation
-Dans le dossier back et front lancer : `npm i`
+Dans le dossier back et front lancer : `npm i` <br>
+Créer un fichier `config.local.json` dans back et front et renseigner sont adresse ip privé (en suivant le schema du fichier config.json)
 
 ## Launch
-Créer un fichier `config.local.json` renseigner sont adresse ip privé (en suivant le schema du fichier config.json)
 Dans le dossier front : `npm run start` <br>
 Dans le dossier back : `docker-compose up -d --build` puis `npm run start` <br>
 
