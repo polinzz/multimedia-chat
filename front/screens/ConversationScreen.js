@@ -1,13 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import config from '../config.json';
+
+function timeNormalize(updatedAt) {
+  const hours = updatedAt.split('T')[1].split(':')
+  return `${hours[0]} : ${hours[1]}`;
+}
 
 export default function ({ navigation }) {
   const apiUrlMyIp = config.apiUrlMyIp;
   const [conversations, setConversations] = useState([]);
 
   useEffect(() => {
-    console.log('hello there');
     fetch(`${apiUrlMyIp}/get-all-conv-by-user/2`)
       .then((response) => {
         if (!response.ok) {
@@ -16,7 +20,6 @@ export default function ({ navigation }) {
         return response.json();
       })
       .then((data) => {
-        console.log(data);
         setConversations(data);
       })
       .catch((error) => {
@@ -38,6 +41,13 @@ export default function ({ navigation }) {
             }}
           >
             <Text style={styles.conversationName}>{item.name}</Text>
+            {item.content !== null &&
+              <Text style={styles.conversationContent}>{item.content}</Text>
+            }
+            {item.updatedAt !== null &&
+              <Text style={styles.conversationContent}>{timeNormalize(item.updatedAt)}</Text>
+            }
+            <Text style={styles.conversationSeparator}>--------------------------</Text>
           </TouchableOpacity>
         )}
       />
@@ -56,7 +66,14 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   conversationName: {
-    fontSize: 16,
+    fontSize: 20,
     marginBottom: 8,
+  },
+  conversationContent: {
+    fontSize: 16,
+    marginBottom: 6,
+  },
+  conversationSeparator: {
+    marginBottom: 12,
   },
 });
