@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import { StyleSheet, View, Text, TextInput, Button } from 'react-native';
-export default function NewMessage () {
+export default function NewMessage (props) {
 	const [myMessage, setMyMessage] = useState('');
 	return (
 		<View style={styles.container}>
 			<TextInput style={styles.myInput} multiline="true" placeholder='Nouveau message' onChangeText={newText => setMyMessage(newText)} defaultValue={''} value={myMessage}/>
-			<Button title="Envoyer" color="#000000" onPress={()=>console.log(myMessage)} />
+			<Button title="Envoyer" color="#000000" onPress={()=>console.log(props.convId,' ~ ',myMessage)} />
 		</View>
 	);
 };

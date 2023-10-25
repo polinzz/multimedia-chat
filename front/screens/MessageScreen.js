@@ -6,7 +6,7 @@ export default function ({ route }) {
 	return (
 		<View>
 			<Text>Conversation ID: {conversationId}</Text>
-			<NewMessage />
+			<NewMessage convId={conversationId}/>
 		</View>
 	);
 };
