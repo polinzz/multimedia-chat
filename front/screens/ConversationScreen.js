@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
-import config from '../config.local.json';
+import config from '../config.json';
 
 export default function ({ navigation }) {
   const apiUrlMyIp = config.apiUrlMyIp;
