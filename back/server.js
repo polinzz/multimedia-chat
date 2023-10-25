@@ -4,8 +4,9 @@ import userRoute from './routes/user.js';
 import convRoute from './routes/conv.js';
 import messageRoute from './routes/message.js';
 import fastifyPostgres from "@fastify/postgres";
-import {hostMyIp} from './config.local.json';
+import config from './config.local.json' assert { type: 'json' };
 
+const hostMyIp = config.hostMyIp;
 const fastify = Fastify({
   logger: true
 })
