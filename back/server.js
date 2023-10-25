@@ -4,6 +4,7 @@ import userRoute from './routes/user.js';
 import convRoute from './routes/conv.js';
 import messageRoute from './routes/message.js';
 import fastifyPostgres from "@fastify/postgres";
+
 const fastify = Fastify({
   logger: true
 })
@@ -17,16 +18,17 @@ fastify.register(convRoute);
 fastify.register(messageRoute);
 
 fastify.get('/user/:id', function (req, reply) {
+  const query = 'SELECT DISTINCT ON (m."updatedAt") m."updatedAt", m.content, c."name", c."id", c."adminId" FROM "conversation" AS c LEFT JOIN "message" as m ON m."convId" = c."id" WHERE c.id IN(SELECT "convId" FROM "conversationUser" WHERE "userId" = $1) ORDER BY m."updatedAt" DESC';
   fastify.pg.query(
-    'SELECT id, name FROM "user" WHERE id=$1', [req.params.id],
+    query, [req.params.id],
     function onResult (err, result) {
-      reply.send(result)
+      reply.send(err || result)
     }
   )
 })
 
 try {
-  await fastify.listen({ port: 4499 })
+  await fastify.listen({port: 4499, host: '192.168.1.184'})
 } catch (err) {
   fastify.log.error(err)
   process.exit(1)

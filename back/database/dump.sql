@@ -84,3 +84,40 @@ VALUES ('azertyuiop', 'FakeUser8', '', 'fakeuser8@mail.com');
 
 INSERT INTO "user" ("pwd", "name", "profilePic", "email")
 VALUES ('azertyuiop', 'FakeUser9', '', 'fakeuser9@mail.com');
+
+INSERT INTO "conversation" ("name", "adminId", "updatedAt" )
+VALUES ('conv1', 2, now());
+
+INSERT INTO "conversation" ("name", "adminId", "updatedAt" )
+VALUES ('conv2', 2, now());
+
+INSERT INTO "conversation" ("name", "adminId", "updatedAt" )
+VALUES ('conv3', 2, now());
+
+INSERT INTO "conversationUser" ("convId", "userId")
+VALUES (2, 2);
+
+INSERT INTO "conversationUser" ("convId", "userId")
+VALUES (3, 2);
+
+INSERT INTO "conversationUser" ("convId", "userId")
+VALUES (1, 2);
+
+INSERT INTO "message" ("content", "convId", "userId", "updatedAt")
+VALUES ('content1Conv1', 2, 2, now());
+INSERT INTO "message" ("content", "convId", "userId", "updatedAt")
+VALUES ('content2Conv1', 2, 2, now());
+
+INSERT INTO "message" ("content", "convId", "userId", "updatedAt")
+VALUES ('content1Conv2', 3, 2, now());
+INSERT INTO "message" ("content", "convId", "userId", "updatedAt")
+VALUES ('content2Conv2', 3, 2, now());
+
+SELECT DISTINCT ON (m."convId") m."convId", m.content, c."name", c."id", c."adminId", m."updatedAt"
+FROM "conversation" AS c
+LEFT JOIN "message" as m ON m."convId" = c."id"
+LEFT JOIN "message" as m2 ON m."convId" = m2."convId"
+AND m."updatedAt" >= m2."updatedAt"
+AND m."id" <> m2."id"
+WHERE c.id IN(SELECT "convId" FROM "conversationUser" WHERE "userId" = 2)
+ORDER BY m."convId" DESC;
