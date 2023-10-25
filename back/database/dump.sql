@@ -113,11 +113,16 @@ VALUES ('content1Conv2', 3, 2, now());
 INSERT INTO "message" ("content", "convId", "userId", "updatedAt")
 VALUES ('content2Conv2', 3, 2, now());
 
-SELECT DISTINCT ON (m."convId") m."convId", m.content, c."name", c."id", c."adminId", m."updatedAt"
+SELECT c."id", c."name", c."adminId", m."content", m."updatedAt"
 FROM "conversation" AS c
-LEFT JOIN "message" as m ON m."convId" = c."id"
-LEFT JOIN "message" as m2 ON m."convId" = m2."convId"
-AND m."updatedAt" >= m2."updatedAt"
-AND m."id" <> m2."id"
-WHERE c.id IN(SELECT "convId" FROM "conversationUser" WHERE "userId" = 2)
-ORDER BY m."convId" DESC;
+LEFT JOIN (
+    SELECT "content", "convId", "updatedAt"
+    FROM "message"
+    WHERE ("convId", "updatedAt") IN (
+        SELECT "convId", MAX("updatedAt")
+        FROM "message"
+        GROUP BY "convId"
+    )
+) AS m ON m."convId" = c."id"
+WHERE c."id" IN (SELECT "convId" FROM "conversationUser" WHERE "userId" = 2)
+ORDER BY m."updatedAt" DESC;
