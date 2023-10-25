@@ -19,7 +19,7 @@ Une application de chat multimedia en temps réel développée avec Node.js, Rea
 Dans le dossier back et front lancer : `npm i`
 
 ## Launch
-Dans les fichiers `config.json` renseigner sont adresse ip privé (pour le fonctionnement local)
+Créer un fichier `config.local.json` renseigner sont adresse ip privé (en suivant le schema du fichier config.json)
 Dans le dossier front : `npm run start` <br>
 Dans le dossier back : `docker-compose up -d --build` puis `npm run start` <br>
 

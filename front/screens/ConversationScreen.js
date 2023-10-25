@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
-import {apiUrlMyIp} from '../config.json';
+import {apiUrlMyIp} from '../config.local.json';
 
 export default function ({ navigation }) {
   const [conversations, setConversations] = useState([]);
