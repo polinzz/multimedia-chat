@@ -28,7 +28,7 @@ fastify.get('/user/:id', function (req, reply) {
 })
 
 try {
-  await fastify.listen({ port: 4499 })
+  await fastify.listen({port: 4499, host: '192.168.1.184'})
 } catch (err) {
   fastify.log.error(err)
   process.exit(1)
