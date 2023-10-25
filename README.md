@@ -17,7 +17,9 @@ Une application de chat multimedia en temps réel développée avec Node.js, Rea
 
 ## Installation
 Dans le dossier back et front lancer : `npm i` <br>
-Créer un fichier `config.json` dans back et front et renseigner sont adresse ip privé (en suivant le schema du fichier config.exemple.json)
+Créer un fichier `config.json` dans back et front et
+renseigner l'adresse ip indiqué par expo au lancement de l'apli
+(en suivant le schema du fichier config.exemple.json)
 
 ## Launch
 Dans le dossier front : `npm run start` <br>
