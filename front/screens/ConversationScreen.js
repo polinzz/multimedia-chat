@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import {apiUrlMyIp} from '../config.json';
 
 export default function ({ navigation }) {
   const [conversations, setConversations] = useState([]);
 
   useEffect(() => {
     console.log('hello there');
-    fetch('http://192.168.1.184:4499/get-all-conv-by-user/2')
+    fetch(`${apiUrlMyIp}/get-all-conv-by-user/2`)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`Reponse HTTP : ${response.status}`);

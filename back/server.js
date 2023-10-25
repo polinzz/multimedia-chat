@@ -4,6 +4,7 @@ import userRoute from './routes/user.js';
 import convRoute from './routes/conv.js';
 import messageRoute from './routes/message.js';
 import fastifyPostgres from "@fastify/postgres";
+import {hostMyIp} from './config.json';
 
 const fastify = Fastify({
   logger: true
@@ -28,7 +29,7 @@ fastify.get('/user/:id', function (req, reply) {
 })
 
 try {
-  await fastify.listen({port: 4499, host: '192.168.1.184'})
+  await fastify.listen({port: 4499, host: hostMyIp})
 } catch (err) {
   fastify.log.error(err)
   process.exit(1)
