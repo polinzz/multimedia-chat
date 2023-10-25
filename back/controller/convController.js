@@ -4,13 +4,13 @@ export function getAllConvByUser(req, res) {
       SELECT c."id", c."name", c."adminId", m."content", m."updatedAt"
       FROM "conversation" AS c
       LEFT JOIN (
-        SELECT "content", "convId", "updatedAt"
-        FROM "message"
-        WHERE ("convId", "updatedAt") IN (
-            SELECT "convId", MAX("updatedAt")
-            FROM "message"
-            GROUP BY "convId"
-        )
+          SELECT "content", "convId", "updatedAt"
+          FROM "message"
+          WHERE ("convId", "updatedAt") IN (
+              SELECT "convId", MAX("updatedAt")
+              FROM "message"
+              GROUP BY "convId"
+          )
       ) AS m ON m."convId" = c."id"
       WHERE c."id" IN (SELECT "convId" FROM "conversationUser" WHERE "userId" = $1)
       ORDER BY m."updatedAt" DESC;

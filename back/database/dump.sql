@@ -85,7 +85,6 @@ VALUES ('azertyuiop', 'FakeUser8', '', 'fakeuser8@mail.com');
 INSERT INTO "user" ("pwd", "name", "profilePic", "email")
 VALUES ('azertyuiop', 'FakeUser9', '', 'fakeuser9@mail.com');
 
-<<<<<<< HEAD
 INSERT INTO "conversation" ("name", "adminId", "updatedAt" )
 VALUES ('conv1', 2, now());
 
@@ -114,6 +113,15 @@ VALUES ('content1Conv2', 3, 2, now());
 INSERT INTO "message" ("content", "convId", "userId", "updatedAt")
 VALUES ('content2Conv2', 3, 2, now());
 
+SELECT DISTINCT ON (c."id") m."convId", m.content, c."name", c."id", c."adminId", m."updatedAt"
+FROM "conversation" AS c
+    LEFT JOIN "message" as m ON m."convId" = c."id"
+    LEFT JOIN "message" as m2 ON m."convId" = c."id"
+    AND m."updatedAt" >= m2."updatedAt"
+    AND m."id" <> m2."id"
+WHERE c.id IN(SELECT "convId" FROM "conversationUser" WHERE "userId" = 2)
+ORDER BY c."id" DESC;
+
 SELECT c."id", c."name", c."adminId", m."content", m."updatedAt"
 FROM "conversation" AS c
 LEFT JOIN (
@@ -127,7 +135,4 @@ LEFT JOIN (
 ) AS m ON m."convId" = c."id"
 WHERE c."id" IN (SELECT "convId" FROM "conversationUser" WHERE "userId" = 2)
 ORDER BY m."updatedAt" DESC;
-=======
-INSERT INTO "user" ("pwd", "name", "profilePic", "email")
-VALUES ('az', 'az', '', 'az');
->>>>>>> eaa4449 (wip: login back)
+
