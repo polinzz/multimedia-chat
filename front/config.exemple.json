@@ -1,8 +1,4 @@
 {
-<<<<<<< HEAD
-  "apiUrlMyIp": "http://yourPrivateIp:4499"
+  "apiUrlMyIp": "http://yourPrivateIp:4499",
+  "socketUrlMyIp": "http://yourPrivateIp:4500"
 }
-=======
-    "apiUrlMyIp": "http://yourPrivateIp:4499"
-}
->>>>>>> eaa4449 (wip: login back)
