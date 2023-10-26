@@ -8,12 +8,12 @@ import {
   SafeAreaView,
 } from "react-native";
 import { makeLoginRequest, handleLoginSuccess } from '../api/SignInApi';
-import { handleLoginError } from '../utils/errorController';
+import { handleLoginError } from '../utils/ErrorController';
 
 export default function SignInScreen({ navigation, route }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  
+
   const handleLogin = async () => {
     try {
       const data = await makeLoginRequest(email, password);
@@ -27,7 +27,7 @@ export default function SignInScreen({ navigation, route }) {
       handleLoginError(error);
     }
   };
-  
+
   return (
     <SafeAreaView
       style={styles.pageStyle}
