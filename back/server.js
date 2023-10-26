@@ -5,7 +5,6 @@ import convRoute from './routes/conv.js';
 import messageRoute from './routes/message.js';
 import fastifyPostgres from "@fastify/postgres";
 import cors from "@fastify/cors";
-import cors from "@fastify/cors";
 import config from './config.json' assert { type: 'json' };
 
 const hostMyIp = config.hostMyIp;
