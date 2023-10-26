@@ -13,10 +13,14 @@ export const makeLoginRequest = async (email, password) => {
     }),
   });
 
+  if (!response.ok) {
+    throw new Error(`Reponse HTTP : ${response.status}`);
+  }
+
   return response.json();
 };
 
 export const handleLoginSuccess = async (user, navigation) => {
   await SecureStore.setItemAsync("userInformation", JSON.stringify(user));
-  navigation.replace("ConversationScreen");
+  navigation.replace("Conversations");
 };

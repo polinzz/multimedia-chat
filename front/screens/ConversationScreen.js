@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import config from '../config.json';
+import {check} from '../utils/CheckUserInfo'
 
 function timeNormalize(updatedAt) {
   const hours = updatedAt.split('T')[1].split(':')
@@ -12,19 +13,26 @@ export default function ({ navigation }) {
   const [conversations, setConversations] = useState([]);
 
   useEffect(() => {
-    fetch(`${apiUrlMyIp}/get-all-conv-by-user/2`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`Reponse HTTP : ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => {
-        setConversations(data);
-      })
-      .catch((error) => {
-        console.error('Erreur :', error);
-      });
+    check().then(result => {
+      if(!result) {
+        navigation.replace("SingIn");
+        return
+      }
+      let user = JSON.parse(result);
+      fetch(`${apiUrlMyIp}/get-all-conv-by-user/${user.id}`)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`Reponse HTTP : ${response.status}`);
+          }
+          return response.json();
+        })
+        .then((data) => {
+          setConversations(data);
+        })
+        .catch((error) => {
+          console.error('Erreur :', error);
+        });
+    });
   }, []);
 
   return (

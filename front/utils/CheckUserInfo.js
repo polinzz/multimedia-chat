@@ -1,8 +1,10 @@
 import * as SecureStore from "expo-secure-store";
 
-export const checkToken = async (navigation) => {
-  const userInformation = await SecureStore.getItemAsync("userInformation");
-  if (!userInformation) {
+export async function check() {
+  /*if (!userInformation) {
     navigation.replace("SingIn");
-  }
-};
+    return;
+  }*/
+
+  return await SecureStore.getItemAsync("userInformation");
+}

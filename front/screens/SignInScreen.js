@@ -17,12 +17,7 @@ export default function SignInScreen({ navigation, route }) {
   const handleLogin = async () => {
     try {
       const data = await makeLoginRequest(email, password);
-      if (data.ok) {
-        handleLoginError(data.error);
-        return;
-      } else {
-        handleLoginSuccess(data.user, navigation);
-      }
+      await handleLoginSuccess(data.user, navigation);
     } catch (error) {
       handleLoginError(error);
     }
