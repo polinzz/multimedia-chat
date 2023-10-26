@@ -22,6 +22,7 @@ CREATE TABLE "conversationUser" (
 
 CREATE TABLE "message" (
     "id" SERIAL PRIMARY KEY,
+    "author" VARCHAR(255) NOT NULL,
     "convId" BIGINT NOT NULL,
     "userId" BIGINT NOT NULL,
     "content" TEXT,
@@ -41,49 +42,49 @@ ALTER TABLE
     "conversationUser" ADD CONSTRAINT "conversationusers_convid_foreign" FOREIGN KEY("convId") REFERENCES "conversation"("id");
 
 INSERT INTO "user" ("pwd", "name", "profilePic", "email")
-VALUES ('azertyuiop', 'Pauline', '', 'pauline@mail.com');
+VALUES ('az', 'Pauline', '', 'pauline@mail.com');
 
 INSERT INTO "user" ("pwd", "name", "profilePic", "email")
-VALUES ('azertyuiop', 'Adrien', '', 'adrien@mail.com');
+VALUES ('az', 'Adrien', '', 'adri');
 
 INSERT INTO "user" ("pwd", "name", "profilePic", "email")
-VALUES ('azertyuiop', 'Romain', '', 'romain@mail.com');
+VALUES ('az', 'Romain', '', 'romain@mail.com');
 
 INSERT INTO "user" ("pwd", "name", "profilePic", "email")
-VALUES ('azertyuiop', 'Valentine', '', 'valentine@mail.com');
+VALUES ('az', 'Valentine', '', 'valentine@mail.com');
 
 INSERT INTO "user" ("pwd", "name", "profilePic", "email")
-VALUES ('azertyuiop', 'Herby', '', 'herby@mail.com');
+VALUES ('az', 'Herby', '', 'herby@mail.com');
 
 INSERT INTO "user" ("pwd", "name", "profilePic", "email")
-VALUES ('azertyuiop', 'Anthony', '', 'anthony@mail.com');
+VALUES ('az', 'Anthony', '', 'anthony@mail.com');
 
 INSERT INTO "user" ("pwd", "name", "profilePic", "email")
-VALUES ('azertyuiop', 'FakeUser1', '', 'fakeuser1@mail.com');
+VALUES ('az', 'FakeUser1', '', 'fakeuser1@mail.com');
 
 INSERT INTO "user" ("pwd", "name", "profilePic", "email")
-VALUES ('azertyuiop', 'FakeUser2', '', 'fakeuser2@mail.com');
+VALUES ('az', 'FakeUser2', '', 'fakeuser2@mail.com');
 
 INSERT INTO "user" ("pwd", "name", "profilePic", "email")
-VALUES ('azertyuiop', 'FakeUser3', '', 'fakeuser3@mail.com');
+VALUES ('az', 'FakeUser3', '', 'fakeuser3@mail.com');
 
 INSERT INTO "user" ("pwd", "name", "profilePic", "email")
-VALUES ('azertyuiop', 'FakeUser4', '', 'fakeuser4@mail.com');
+VALUES ('az', 'FakeUser4', '', 'fakeuser4@mail.com');
 
 INSERT INTO "user" ("pwd", "name", "profilePic", "email")
-VALUES ('azertyuiop', 'FakeUser5', '', 'fakeuser5@mail.com');
+VALUES ('az', 'FakeUser5', '', 'fakeuser5@mail.com');
 
 INSERT INTO "user" ("pwd", "name", "profilePic", "email")
-VALUES ('azertyuiop', 'FakeUser6', '', 'fakeuser6@mail.com');
+VALUES ('az', 'FakeUser6', '', 'fakeuser6@mail.com');
 
 INSERT INTO "user" ("pwd", "name", "profilePic", "email")
-VALUES ('azertyuiop', 'FakeUser7', '', 'fakeuser7@mail.com');
+VALUES ('az', 'FakeUser7', '', 'fakeuser7@mail.com');
 
 INSERT INTO "user" ("pwd", "name", "profilePic", "email")
-VALUES ('azertyuiop', 'FakeUser8', '', 'fakeuser8@mail.com');
+VALUES ('az', 'FakeUser8', '', 'fakeuser8@mail.com');
 
 INSERT INTO "user" ("pwd", "name", "profilePic", "email")
-VALUES ('azertyuiop', 'FakeUser9', '', 'fakeuser9@mail.com');
+VALUES ('az', 'FakeUser9', '', 'fakeuser9@mail.com');
 
 INSERT INTO "conversation" ("name", "adminId", "updatedAt" )
 VALUES ('conv1', 2, now());
@@ -94,6 +95,9 @@ VALUES ('conv2', 2, now());
 INSERT INTO "conversation" ("name", "adminId", "updatedAt" )
 VALUES ('conv3', 2, now());
 
+INSERT INTO "conversation" ("name", "adminId", "updatedAt" )
+VALUES ('adri-paupau', 2, now());
+
 INSERT INTO "conversationUser" ("convId", "userId")
 VALUES (2, 2);
 
@@ -103,15 +107,24 @@ VALUES (3, 2);
 INSERT INTO "conversationUser" ("convId", "userId")
 VALUES (1, 2);
 
-INSERT INTO "message" ("content", "convId", "userId", "updatedAt")
-VALUES ('content1Conv1', 2, 2, now());
-INSERT INTO "message" ("content", "convId", "userId", "updatedAt")
-VALUES ('content2Conv1', 2, 2, now());
+INSERT INTO "conversationUser" ("convId", "userId")
+VALUES (4, 2);
 
-INSERT INTO "message" ("content", "convId", "userId", "updatedAt")
-VALUES ('content1Conv2', 3, 2, now());
-INSERT INTO "message" ("content", "convId", "userId", "updatedAt")
-VALUES ('content2Conv2', 3, 2, now());
+INSERT INTO "conversationUser" ("convId", "userId")
+VALUES (4, 1);
+
+INSERT INTO "message" ("content", "convId", "userId", "updatedAt", "author")
+VALUES ('content1Conv1', 2, 2, now(), 'Adrien');
+INSERT INTO "message" ("content", "convId", "userId", "updatedAt", "author")
+VALUES ('content2Conv1', 2, 2, now(), 'Adrien');
+
+INSERT INTO "message" ("content", "convId", "userId", "updatedAt", "author")
+VALUES ('content1Conv2', 3, 2, now(), 'Adrien');
+INSERT INTO "message" ("content", "convId", "userId", "updatedAt", "author")
+VALUES ('content2Conv2', 3, 2, now(), 'Adrien');
+
+INSERT INTO "message" ("content", "convId", "userId", "updatedAt", "author")
+VALUES ('firstMessage', 4, 2, now(), 'Adrien');
 
 SELECT DISTINCT ON (c."id") m."convId", m.content, c."name", c."id", c."adminId", m."updatedAt"
 FROM "conversation" AS c

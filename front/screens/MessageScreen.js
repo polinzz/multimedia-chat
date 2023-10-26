@@ -59,6 +59,7 @@ export default function ({ route, navigation }) {
           content: content,
           convId: conversationId,
           userId: user.id,
+          author: user.name
         }),
       });
 

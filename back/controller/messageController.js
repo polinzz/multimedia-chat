@@ -5,7 +5,6 @@ export function getMessageByConvId (req, res) {
   req.server.pg.query(
     query, [req.params.convId],
     function onResult(err, result) {
-      console.log(result.rows[0].updatedAt, typeof result.rows[0].updatedAt)
       res.send(err || result.rows)
     }
   )
@@ -16,13 +15,13 @@ export function getOneMessage (req, res) {
 }
 
 export async function sendMessage(req, res) {
-  const {content, convId, userId} = req.body;
+  const {content, convId, userId, author} = req.body;
   console.log(req.body)
 
   try {
     const result = await req.server.pg.query(
-      `INSERT INTO "message" ("content", "convId", "userId", "updatedAt")
-       VALUES ($1, $2, $3, now()) RETURNING "id", "content", "convId", "userId", "updatedAt";`, [content, convId, userId]
+      `INSERT INTO "message" ("content", "convId", "userId",  "author", "updatedAt")
+       VALUES ($1, $2, $3, $4, now()) RETURNING "id", "content", "convId", "userId", "author", "updatedAt";`, [content, convId, userId, author]
     )
 
     const io = getSocketIOInstance()
