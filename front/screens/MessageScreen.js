@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import {SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, FlatList, View} from 'react-native';
 import io from 'socket.io-client';
 import config from '../config.json';
 import {handleLoginSuccess, makeLoginRequest} from "../api/SignInApi";
 import {handleLoginError} from "../utils/ErrorController";
 import {check} from "../utils/CheckUserInfo";
+import {timeNormalize} from '../utils/timeHandler';
 
 export default function ({ route, navigation }) {
   const {conversationId} = route.params;
@@ -13,6 +14,7 @@ export default function ({ route, navigation }) {
   const socketUrlMyIp = config.socketUrlMyIp;
   const [user, setUser] = useState({});
   const apiUrlMyIp = config.apiUrlMyIp;
+  const scrollViewRef = useRef();
 
   useEffect(() => {
     check().then(result => {
@@ -67,6 +69,8 @@ export default function ({ route, navigation }) {
         throw new Error(`Reponse HTTP : ${response.status}`);
       }
 
+      setContent("");
+
       return response.json();
     } catch (error) {
       handleLoginError(error);
@@ -75,49 +79,114 @@ export default function ({ route, navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      {messages.map((message) => (
-        <Text key={message.id}>{message.content}</Text>
-      ))}
-      <TextInput
-        style={styles.input}
-        onChangeText={setContent}
-        placeholder="Message"
+      <FlatList
+        data={messages}
+        renderItem={({ item: message }) => (
+          <View style={message.author === user.name ? styles.userMessageContainer : styles.otherMessageContainer}>
+            {message.author !== user.name && (
+              <Text style={styles.authorName}>{message.author}</Text>
+            )}
+            <Text style={message.author === user.name ? styles.userMessage : styles.otherMessage}>
+              {message.content}
+            </Text>
+            <Text style={message.author === user.name ? styles.userDate : styles.otherDate}>
+              {timeNormalize(message.updatedAt, 'message')}
+            </Text>
+          </View>
+        )}
+        keyExtractor={(item) => item.id.toString()}
+        ref={(ref) => (flatListRef = ref)}
+        onContentSizeChange={() => flatListRef.scrollToEnd({ animated: true })}
       />
-      <TouchableOpacity
-        onPress={() => handleSubmit()}
-        style={styles.appButtonContainer}
-      >
-        <Text style={styles.appButtonText}>Envoyer</Text>
-      </TouchableOpacity>
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          multiline={true}
+          placeholder="Message"
+          value={content}
+          onChangeText={setContent}
+        />
+        <TouchableOpacity onPress={() => handleSubmit()} style={styles.sendButton}>
+          <Text style={styles.sendButtonText}>Envoyer</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
-
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    padding: 10,
+    justifyContent: 'flex-end',
+  },
+  userMessageContainer: {
+    alignSelf: 'flex-end',
+    marginBottom: 10,
+  },
+  otherMessageContainer: {
+    alignSelf: 'flex-start',
+    marginBottom: 10,
+  },
+  authorName: {
+    color: 'gray',
+    marginRight: 5,
+  },
+  userMessage: {
+    backgroundColor: '#F3B852',
+    padding: 10,
+    borderRadius: 8,
+    maxWidth: '70%',
+  },
+  otherMessage: {
+    backgroundColor: '#E5E5E5',
+    padding: 10,
+    borderRadius: 8,
+    maxWidth: '70%',
+  },
+  userDate: {
+    color: 'gray',
+    marginRight: 5,
+    fontSize: 12,
+    alignSelf: 'flex-end',
+  },
+  otherDate: {
+    color: 'gray',
+    marginRight: 5,
+    fontSize: 12,
+    alignSelf: 'flex-start',
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: 'white',
+    padding: 10,
+    borderRadius: 25,
+    marginVertical: 10,
   },
   input: {
+    flex: 1,
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+  },
+  sendButton: {
+    backgroundColor: '#F3B852',
+    borderRadius: 25,
     padding: 10,
-    backgroundColor: "#E5E5E5",
-    width: '100%',
-    borderRadius: 8,
-    marginBottom: 20,
   },
-  appButtonContainer: {
-    backgroundColor: "#F3B852",
-    borderRadius: 8,
-    paddingVertical: 12,
-    marginTop:40,
-    width: '100%',
+  sendButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
-  appButtonText: {
-    fontSize: 16,
-    color: "#fff",
-    fontWeight: "bold",
-    alignSelf: "center",
-    textTransform: "uppercase",
+  messageContainer: {
+    flex: 1,
+    paddingHorizontal: 10,
+    marginBottom: 10,
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
   },
 });
+
+

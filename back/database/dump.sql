@@ -124,7 +124,13 @@ INSERT INTO "message" ("content", "convId", "userId", "updatedAt", "author")
 VALUES ('content2Conv2', 3, 2, now(), 'Adrien');
 
 INSERT INTO "message" ("content", "convId", "userId", "updatedAt", "author")
-VALUES ('firstMessage', 4, 2, now(), 'Adrien');
+VALUES ('Hi Barbie', 4, 2, now(), 'Adrien');
+INSERT INTO "message" ("content", "convId", "userId", "updatedAt", "author")
+VALUES ('Hi Ken', 4, 1, now(), 'Pauline');
+INSERT INTO "message" ("content", "convId", "userId", "updatedAt", "author")
+VALUES ('Ho you touch my tralala', 4, 2, now(), 'Adrien');
+INSERT INTO "message" ("content", "convId", "userId", "updatedAt", "author")
+VALUES ('My ding ding dong', 4, 1, now(), 'Pauline');
 
 SELECT DISTINCT ON (c."id") m."convId", m.content, c."name", c."id", c."adminId", m."updatedAt"
 FROM "conversation" AS c
