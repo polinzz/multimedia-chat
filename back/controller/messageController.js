@@ -1,7 +1,14 @@
 import { getSocketIOInstance } from '../socket.js';
 
-export function getMessage (req, res) {
-  res.send({hello: 'getMessage'});
+export function getMessageByConvId (req, res) {
+  const query = `SELECT * FROM "message" WHERE "convId" = $1;`
+  req.server.pg.query(
+    query, [req.params.convId],
+    function onResult(err, result) {
+      console.log(result.rows[0].updatedAt, typeof result.rows[0].updatedAt)
+      res.send(err || result.rows)
+    }
+  )
 }
 
 export function getOneMessage (req, res) {
@@ -10,6 +17,7 @@ export function getOneMessage (req, res) {
 
 export async function sendMessage(req, res) {
   const {content, convId, userId} = req.body;
+  console.log(req.body)
 
   try {
     const result = await req.server.pg.query(

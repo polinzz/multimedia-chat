@@ -1,42 +1,42 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {FlatList, StyleSheet, Text, TouchableOpacity, SafeAreaView} from 'react-native';
 import config from '../config.json';
 import {check} from '../utils/CheckUserInfo'
-
-function timeNormalize(updatedAt) {
-  const hours = updatedAt.split('T')[1].split(':')
-  return `${hours[0]} : ${hours[1]}`;
-}
+import {timeNormalize} from '../utils/timeHandler'
+import { useIsFocused } from '@react-navigation/native';
 
 export default function ({ navigation }) {
   const apiUrlMyIp = config.apiUrlMyIp;
   const [conversations, setConversations] = useState([]);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
-    check().then(result => {
-      if(!result) {
-        navigation.replace("SingIn");
-        return
-      }
-      let user = JSON.parse(result);
-      fetch(`${apiUrlMyIp}/get-all-conv-by-user/${user.id}`)
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error(`Reponse HTTP : ${response.status}`);
-          }
-          return response.json();
-        })
-        .then((data) => {
-          setConversations(data);
-        })
-        .catch((error) => {
-          console.error('Erreur :', error);
-        });
-    });
-  }, []);
+    if (isFocused) {
+      check().then(result => {
+        if (!result) {
+          navigation.replace("SingIn");
+          return
+        }
+        let user = JSON.parse(result);
+        fetch(`${apiUrlMyIp}/get-all-conv-by-user/${user.id}`)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`Reponse HTTP : ${response.status}`);
+            }
+            return response.json();
+          })
+          .then((data) => {
+            setConversations(data);
+          })
+          .catch((error) => {
+            console.error('Erreur :', error);
+          });
+      });
+    }
+  }, [isFocused]);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <FlatList
         data={conversations}
         keyExtractor={(item) => item.id.toString()}
@@ -53,13 +53,13 @@ export default function ({ navigation }) {
               <Text style={styles.conversationContent}>{item.content}</Text>
             }
             {item.updatedAt !== null &&
-              <Text style={styles.conversationContent}>{timeNormalize(item.updatedAt)}</Text>
+              <Text style={styles.conversationContent}>{timeNormalize(item.updatedAt, 'conv')}</Text>
             }
             <Text style={styles.conversationSeparator}>--------------------------</Text>
           </TouchableOpacity>
         )}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
