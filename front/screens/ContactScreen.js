@@ -1,12 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, SafeAreaView, TextInput, FlatList, TouchableWithoutFeedback, Image, ScrollView } from 'react-native';
+import { StyleSheet, View, Text, SafeAreaView, TextInput, FlatList, TouchableWithoutFeedback, Image, ScrollView, Button } from 'react-native';
+import * as SecureStore from 'expo-secure-store';
+import { check } from '../utils/CheckUserInfo';
 
-const ConversationScreen = () => {
+const ConversationScreen = ({ navigation }) => {
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [users, setUsers] = useState([]);
   const [conversationName, setConversationName] = useState('');
+  const [loggedInUser, setLoggedInUser] = useState({});
 
   useEffect(() => {
+    const getLoggedInUserId = async () => {
+      check().then(result => {
+        if(!result) {
+          navigation.replace("SingIn");
+        }
+        setLoggedInUser(JSON.parse(result));
+      })   
+    };
+
+    getLoggedInUserId();
+
+    // Fetch pour récupérer ls user
     fetch('http://172.20.10.2:4499/getUser')
       .then(response => response.json())
       .then(data => {
@@ -26,28 +41,30 @@ const ConversationScreen = () => {
     }
   };
 
-  const createConversation = () => {
-    // Vérifier si au moins un utilisateur est sélectionné et s'il y a un nom de conversation
-    if (selectedUsers.length > 0 && conversationName) {
-      // Envoyer une requête au backend pour créer la conversation
-      fetch('http://votre_adresse_ip:3000/conversations', {
+  const handleSubmit = async () => {
+    const dataConv = await createConversation();
+    navigation.replace('Messages', {conversationId: dataConv.convId});
+  }
+
+  async function createConversation() {
+    if (selectedUsers.length > 0 && conversationName && loggedInUser) {
+      const response = await fetch('http://172.20.10.2:4499/createConv', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          adminId: loggedInUser.id,
           selectedUsers,
           conversationName,
         }),
-      })
-        .then(response => response.json())
-        .then(data => {
-          // Traitez la réponse du backend si nécessaire
-          console.log('Conversation créée avec succès:', data);
-        })
-        .catch(error => {
-          console.error('Erreur lors de la création de la conversation:', error);
-        });
+      });
+
+      if (!response.ok) {
+        throw new Error(`Reponse HTTP : ${response.status}`);
+      }
+
+      return response.json();
     } else {
       console.log('Veuillez sélectionner des utilisateurs et spécifier un nom de conversation.');
     }
@@ -64,53 +81,46 @@ const ConversationScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-          <ScrollView style={styles.scrollView}>
-      <View style={styles.header}>
-        <Text style={styles.text}>Nouveau groupe</Text>
-      </View>
-      <View>
-        <Text style={styles.text}>Nom de la conversation</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Nom de la conversation..."
-          value={conversationName}
-          onChangeText={text => setConversationName(text)}
-        />
-      </View>
-      <View>
-        <Text style={styles.text}>Contacts</Text>
-        <FlatList data={users} renderItem={renderItem} keyExtractor={(item) => item.id.toString()} />
-      </View>
-      <View style={styles.imageContainer}>
-        <Image
-          style={styles.tinyLogo}
-          source={require('../assets/Frame.png')}
-        />
-      </View>
-      
-      {/* <Button title="Créer la conversation" onPress={createConversation} /> */}
+      <ScrollView style={styles.scrollView}>
+        <View>
+          <Text style={styles.text}>Nom de la conversation</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Nom de la conversation..."
+            value={conversationName}
+            onChangeText={text => setConversationName(text)}
+          />
+        </View>
+        <View>
+          <Text style={styles.text}>Contacts</Text>
+          <FlatList data={users} renderItem={renderItem} keyExtractor={(item) => item.id.toString()} />
+          <View style={styles.buttonContainer}>
+            <Button title="Créer la conversation" onPress={() => handleSubmit()} />
+          </View>
+          <Image
+            style={styles.tinyLogo}
+            source={require('../assets/Frame.png')}
+          />
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
 };
-
 const styles = StyleSheet.create({
-  header:{
-    marginBottom: 0,
-    padding: 15,
+  scrollView: {
+    marginHorizontal: 20,
   },
-scrollView: {
-  marginHorizontal: 20,
-},
-imageContainer: {
-  marginTop: 20,
-},
-tinyLogo:{
+  buttonContainer: {
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  tinyLogo: {
     left: 250,
-    width: 55, 
+    width: 55,
     height: 55,
     borderRadius: 400,
-      },
+    position: 'absolute',
+  },
   container: {
     flex: 1,
     margin: 16,
@@ -130,10 +140,6 @@ tinyLogo:{
     borderRadius: 10,
     borderWidth: 2,
     borderColor: '#FF9F2D',
-  },
-  view: {
-    marginBottom: 16,
-    padding: 15,
   },
   text: {
     fontSize: 20,

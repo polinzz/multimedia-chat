@@ -22,5 +22,5 @@ export const makeLoginRequest = async (email, password) => {
 
 export const handleLoginSuccess = async (user, navigation) => {
   await SecureStore.setItemAsync("userInformation", JSON.stringify(user));
-  navigation.replace("Conversations");
+  navigation.replace("Nouvelle conversation");
 };
