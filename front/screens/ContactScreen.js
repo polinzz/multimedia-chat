@@ -1,5 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, SafeAreaView, TextInput, FlatList, TouchableWithoutFeedback, Image, ScrollView, Button } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  SafeAreaView,
+  TextInput,
+  FlatList,
+  TouchableWithoutFeedback,
+  Image,
+  ScrollView,
+  Button,
+  TouchableOpacity
+} from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import { check } from '../utils/CheckUserInfo';
 import config from '../config.json';
@@ -18,12 +30,11 @@ const ConversationScreen = ({ navigation }) => {
           navigation.replace("SingIn");
         }
         setLoggedInUser(JSON.parse(result));
-      })   
+      })
     };
 
     getLoggedInUserId();
 
-    // Fetch pour récupérer ls user
     fetch(`${apiUrlMyIp}/getUser`)
       .then(response => response.json())
       .then(data => {
@@ -74,38 +85,42 @@ const ConversationScreen = ({ navigation }) => {
 
   const renderItem = ({ item }) => (
     <TouchableWithoutFeedback onPress={() => toggleUserSelection(item.id)}>
-      <View style={styles.item}>
-        <Text style={styles.itemText}>{item.name}</Text>
-        <View style={[styles.selectionCircle, { backgroundColor: selectedUsers.includes(item.id) ? '#FF9F2D' : 'transparent' }]} />
-      </View>
+      {item.id !== loggedInUser &&
+        <View style={styles.item}>
+          <Text style={styles.itemText}>{item.name}</Text>
+          <View style={[styles.selectionCircle, { backgroundColor: selectedUsers.includes(item.id) ? '#FF9F2D' : 'transparent' }]} />
+        </View>
+      }
     </TouchableWithoutFeedback>
   );
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView}>
-        <View>
-          <Text style={styles.text}>Nom de la conversation</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Nom de la conversation..."
-            value={conversationName}
-            onChangeText={text => setConversationName(text)}
-          />
-        </View>
-        <View>
-          <Text style={styles.text}>Contacts</Text>
-          <FlatList data={users} renderItem={renderItem} keyExtractor={(item) => item.id.toString()} />
-          <View style={styles.buttonContainer}>
-            <Button title="Créer la conversation" onPress={() => handleSubmit()} />
-          </View>
-          <Image
-            style={styles.tinyLogo}
-            source={require('../assets/Frame.png')}
-          />
-        </View>
-      </ScrollView>
+      <View>
+        <Text style={styles.text}>Nom de la conversation</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Nom de la conversation..."
+          value={conversationName}
+          onChangeText={text => setConversationName(text)}
+        />
+      </View>
+      <View>
+        <Text style={styles.text}>Contacts</Text>
+      </View>
+      <FlatList data={users} renderItem={renderItem} keyExtractor={(item) => item.id.toString()} />
+      {/*<View style={styles.buttonContainer}>
+        <Button title="Créer la conversation" onPress={() => handleSubmit()} />
+      </View>*/}
+      <TouchableOpacity
+        style={styles.touchable}
+        onPress={() => handleSubmit()}>
+        <Image style={styles.tinyLogo}
+               source={require('../assets/Frame.png')}
+        />
+      </TouchableOpacity>
     </SafeAreaView>
+
   );
 };
 const styles = StyleSheet.create({
@@ -113,15 +128,15 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   buttonContainer: {
-    marginTop: 20,
     marginBottom: 20,
   },
   tinyLogo: {
-    left: 250,
+    left: 290,
     width: 55,
     height: 55,
     borderRadius: 400,
-    position: 'absolute',
+    bottom: 10,
+    marginTop: 20,
   },
   container: {
     flex: 1,

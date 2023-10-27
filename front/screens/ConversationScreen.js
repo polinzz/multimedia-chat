@@ -61,8 +61,8 @@ export default function ({ navigation }) {
       />
       <TouchableOpacity
         style={styles.touchable}
-        onPress={() => { 
-            navigation.navigate('Nouvelle conversation'); 
+        onPress={() => {
+            navigation.navigate('Nouvelle conversation');
         }}>
         <Image style={styles.tinyLogo}
           source={require('../assets/Frame.png')}
@@ -78,12 +78,12 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   tinyLogo: {
-    left: 250,
+    left: 290,
     width: 55,
     height: 55,
     borderRadius: 400,
-    bottom: 40,
-    position: 'absolute',
+    bottom: 10,
+    marginTop: 20,
   },
   header: {
     fontSize: 20,
