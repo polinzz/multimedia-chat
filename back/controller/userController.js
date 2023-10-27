@@ -1,7 +1,14 @@
 
-export function getUser (req, res) {
-  res.send({hello: 'getUser'});
+export async function getUser(req, res) {
+  try {
+    const result = await req.server.pg.query('SELECT * FROM "user"');
+    res.send(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ error: 'Internal Server Error' });
+  }
 }
+
 
 export function getOneUser (req, res) {
   res.send({hello: 'getOneUser'});
@@ -13,7 +20,7 @@ export function signIn (req, res) {
   req.server.pg.query(
     'SELECT id, name, pwd,email FROM "user" where email=$1',
     [email.toLowerCase()],
-    function onResult(err, result) {
+    function onResult(err, result) { 
         if(err){
           res.send(err);
           return;

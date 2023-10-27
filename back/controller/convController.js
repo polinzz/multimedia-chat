@@ -16,7 +16,7 @@ export function getAllConvByUser(req, res) {
       ORDER BY m."updatedAt" DESC;
   `;
   req.server.pg.query(
-    query, [req.params.id],
+    query, [req.params.id], 
     function onResult(err, result) {
       res.send(err || result.rows)
     }
@@ -26,3 +26,4 @@ export function getAllConvByUser(req, res) {
 export function getOneConv(req, res) {
   res.send({hello: 'getOneConv'});
 }
+

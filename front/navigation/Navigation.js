@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ConversationScreen from '../screens/ConversationScreen';
 import MessageScreen from '../screens/MessageScreen';
 import SignInScreen from '../screens/SignInScreen';
+import ContactScreen from '../screens/ContactScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -19,6 +20,7 @@ export default function () {
           }}
         />
         <Stack.Screen name="Conversations" component={ConversationScreen}/>
+        <Stack.Screen name="Contacts" component={ContactScreen} />
         <Stack.Screen name="Messages" component={MessageScreen} />
       </Stack.Navigator>
     </NavigationContainer>
