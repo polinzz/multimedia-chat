@@ -20,7 +20,7 @@ export default function () {
           }}
         />
         <Stack.Screen name="Conversations" component={ConversationScreen}/>
-        <Stack.Screen name="Contacts" component={ContactScreen} />
+        <Stack.Screen name="Nouvelle conversation" component={ContactScreen}/>
         <Stack.Screen name="Messages" component={MessageScreen} />
       </Stack.Navigator>
     </NavigationContainer>

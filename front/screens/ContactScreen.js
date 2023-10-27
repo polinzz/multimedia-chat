@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, SafeAreaView, TextInput, FlatList, TouchableWithoutFeedback, Image, ScrollView, Button } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import { check } from '../utils/CheckUserInfo';
+import config from '../config.json';
 
 const ConversationScreen = ({ navigation }) => {
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [users, setUsers] = useState([]);
   const [conversationName, setConversationName] = useState('');
   const [loggedInUser, setLoggedInUser] = useState({});
+  const apiUrlMyIp = config.apiUrlMyIp;
 
   useEffect(() => {
     const getLoggedInUserId = async () => {
@@ -22,7 +24,7 @@ const ConversationScreen = ({ navigation }) => {
     getLoggedInUserId();
 
     // Fetch pour récupérer ls user
-    fetch('http://172.20.10.2:4499/getUser')
+    fetch(`${apiUrlMyIp}/getUser`)
       .then(response => response.json())
       .then(data => {
         setUsers(data);
@@ -48,7 +50,7 @@ const ConversationScreen = ({ navigation }) => {
 
   async function createConversation() {
     if (selectedUsers.length > 0 && conversationName && loggedInUser) {
-      const response = await fetch('http://172.20.10.2:4499/createConv', {
+      const response = await fetch(`${apiUrlMyIp}/createConv`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

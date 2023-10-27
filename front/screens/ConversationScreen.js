@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, StyleSheet, Text, TouchableOpacity, SafeAreaView} from 'react-native';
+import {FlatList, StyleSheet, Text, TouchableOpacity, SafeAreaView, Image} from 'react-native';
 import config from '../config.json';
 import {check} from '../utils/CheckUserInfo'
 import {timeNormalize} from '../utils/timeHandler'
@@ -59,6 +59,15 @@ export default function ({ navigation }) {
           </TouchableOpacity>
         )}
       />
+      <TouchableOpacity
+        style={styles.touchable}
+        onPress={() => { 
+            navigation.navigate('Nouvelle conversation'); 
+        }}>
+        <Image style={styles.tinyLogo}
+          source={require('../assets/Frame.png')}
+        />
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }
@@ -67,6 +76,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+  },
+  tinyLogo: {
+    left: 250,
+    width: 55,
+    height: 55,
+    borderRadius: 400,
+    bottom: 40,
+    position: 'absolute',
   },
   header: {
     fontSize: 20,
