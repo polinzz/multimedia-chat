@@ -1,4 +1,5 @@
 import { getSocketIOInstance } from '../socket.js';
+import { v4 as uuidv4 } from 'uuid';
 
 export function getMessageByConvId (req, res) {
   const query = `SELECT * FROM "message" WHERE "convId" = $1;`
@@ -15,21 +16,33 @@ export function getOneMessage (req, res) {
 }
 
 export async function sendMessage(req, res) {
-  const {content, convId, userId, author} = req.body;
-  console.log(req.body)
+  console.log(req.file());
+  /*const { content, convId, userId, author } = req.body;*/
 
   try {
-    const result = await req.server.pg.query(
-      `INSERT INTO "message" ("content", "convId", "userId",  "author", "updatedAt")
-       VALUES ($1, $2, $3, $4, now()) RETURNING "id", "content", "convId", "userId", "author", "updatedAt";`, [content, convId, userId, author]
-    )
+    /*let imageFileName = null;
 
-    const io = getSocketIOInstance()
+    if (req.file) {
+      imageFileName = `${uuidv4()}${req.file.originalname.slice(req.file.originalname.lastIndexOf('.'))}`;
+
+      const destination = `../uploads/${imageFileName}`;
+      await req.file.mv(destination);
+    }
+
+    const result = await req.server.pg.query(
+      `INSERT INTO "message" ("content", "convId", "userId", "author", "link", "updatedAt")
+       VALUES ($1, $2, $3, $4, $5, now()) RETURNING "id", "content", "convId", "userId", "author", "link", "updatedAt";`,
+      [content, convId, userId, author, imageFileName]
+    );
+
+    const io = getSocketIOInstance();
     io.to(convId).emit('newMessage', result.rows[0]);
 
-    res.send({message: result.rows[0]})
+    res.send({ message: result.rows[0] });*/
+  res.send({heelo: 'there'});
   } catch (err) {
-    res.send({error: err})
+    res.send({ error: err });
   }
 }
+
 

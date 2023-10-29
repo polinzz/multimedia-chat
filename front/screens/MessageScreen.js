@@ -1,25 +1,37 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, FlatList, View} from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import {
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  FlatList,
+  View,
+  Image,
+} from 'react-native';
+import * as ImagePicker from 'expo-image-picker'; // Importer depuis Expo ImagePicker
 import io from 'socket.io-client';
 import config from '../config.json';
-import {handleLoginSuccess, makeLoginRequest} from "../api/SignInApi";
-import {handleLoginError} from "../utils/ErrorController";
-import {check} from "../utils/CheckUserInfo";
-import {timeNormalize} from '../utils/timeHandler';
+import { handleLoginSuccess, makeLoginRequest } from '../api/SignInApi';
+import { handleLoginError } from '../utils/ErrorController';
+import { check } from '../utils/CheckUserInfo';
+import { timeNormalize } from '../utils/timeHandler';
 
 export default function ({ route, navigation }) {
-  const {conversationId} = route.params;
+  const { conversationId } = route.params;
   const [messages, setMessages] = useState([]);
-  const [content, setContent] = useState("");
+  const [content, setContent] = useState('');
+  const [selectedImage, setSelectedImage] = useState({});
   const socketUrlMyIp = config.socketUrlMyIp;
   const [user, setUser] = useState({});
   const apiUrlMyIp = config.apiUrlMyIp;
   const scrollViewRef = useRef();
 
   useEffect(() => {
-    check().then(result => {
-      if(!result) {
-        navigation.replace("SingIn");
+    check().then((result) => {
+      if (!result) {
+        navigation.replace('SingIn');
       }
       setUser(JSON.parse(result));
 
@@ -50,26 +62,52 @@ export default function ({ route, navigation }) {
     };
   }, []);
 
+  const selectImage = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      alert('La permission d\'accéder à la bibliothèque de médias est requise.');
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.cancelled) {
+      setSelectedImage(result);
+    }
+  };
+
   const handleSubmit = async () => {
     try {
+      const formData = new FormData();
+      formData.append('content', content);
+      formData.append('convId', conversationId);
+      formData.append('userId', user.id);
+      formData.append('author', user.name);
+
+      if (selectedImage) {
+        formData.append('image', {
+          uri: selectedImage.uri,
+          type: 'image/jpeg',
+          name: 'image.jpg',
+        });
+      }
+
       const response = await fetch(`${apiUrlMyIp}/send-message`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          content: content,
-          convId: conversationId,
-          userId: user.id,
-          author: user.name
-        }),
+        method: 'POST',
+        body: formData,
       });
 
       if (!response.ok) {
         throw new Error(`Reponse HTTP : ${response.status}`);
       }
 
-      setContent("");
+      setContent('');
+      setSelectedImage(null);
 
       return response.json();
     } catch (error) {
@@ -82,14 +120,32 @@ export default function ({ route, navigation }) {
       <FlatList
         data={messages}
         renderItem={({ item: message }) => (
-          <View style={message.author === user.name ? styles.userMessageContainer : styles.otherMessageContainer}>
+          <View
+            style={
+              message.author === user.name
+                ? styles.userMessageContainer
+                : styles.otherMessageContainer
+            }
+          >
             {message.author !== user.name && (
               <Text style={styles.authorName}>{message.author}</Text>
             )}
-            <Text style={message.author === user.name ? styles.userMessage : styles.otherMessage}>
+            <Text
+              style={
+                message.author === user.name
+                  ? styles.userMessage
+                  : styles.otherMessage
+              }
+            >
               {message.content}
             </Text>
-            <Text style={message.author === user.name ? styles.userDate : styles.otherDate}>
+            <Text
+              style={
+                message.author === user.name
+                  ? styles.userDate
+                  : styles.otherDate
+              }
+            >
               {timeNormalize(message.updatedAt, 'message')}
             </Text>
           </View>
@@ -98,6 +154,11 @@ export default function ({ route, navigation }) {
         ref={(ref) => (flatListRef = ref)}
         onContentSizeChange={() => flatListRef.scrollToEnd({ animated: true })}
       />
+
+      {selectedImage && (
+        <Image source={{ uri: selectedImage.uri }} style={styles.selectedImage} />
+      )}
+
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -106,13 +167,16 @@ export default function ({ route, navigation }) {
           value={content}
           onChangeText={setContent}
         />
-        <TouchableOpacity onPress={() => handleSubmit()} style={styles.sendButton}>
+        <TouchableOpacity onPress={selectImage} style={styles.selectImageButton}>
+          <Text style={styles.selectImageButtonText}>Sélectionner une image</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleSubmit} style={styles.sendButton}>
           <Text style={styles.sendButtonText}>Envoyer</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -170,6 +234,15 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 10,
   },
+  selectImageButton: {
+    backgroundColor: '#F3B852',
+    borderRadius: 25,
+    padding: 10,
+  },
+  selectImageButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
   sendButton: {
     backgroundColor: '#F3B852',
     borderRadius: 25,
@@ -179,14 +252,9 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
   },
-  messageContainer: {
-    flex: 1,
-    paddingHorizontal: 10,
-    marginBottom: 10,
-    flexDirection: 'column',
-    alignItems: 'flex-end',
-    justifyContent: 'flex-end',
+  selectedImage: {
+    width: 100,
+    height: 100,
+    margin: 10,
   },
 });
-
-

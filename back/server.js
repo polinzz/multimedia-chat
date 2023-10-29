@@ -4,6 +4,7 @@ import userRoute from './routes/user.js';
 import convRoute from './routes/conv.js';
 import messageRoute from './routes/message.js';
 import fastifyPostgres from '@fastify/postgres';
+import fastifyMultipart from 'fastify-multipart';
 import cors from '@fastify/cors';
 import config from './config.json' assert { type: 'json' };
 import http from 'http';
@@ -20,6 +21,11 @@ fastify.register(cors, {
 
 fastify.register(fastifyPostgres, {
   connectionString: 'postgres://user:password@127.0.0.1:5432/CHAT',
+});
+
+fastify.register(fastifyMultipart, {
+  attachFieldsToBody: true,
+  sharedSchemaId: '#imageForm',
 });
 
 fastify.register(userRoute);
