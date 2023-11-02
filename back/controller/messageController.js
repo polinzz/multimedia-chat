@@ -16,30 +16,22 @@ export function getOneMessage (req, res) {
 }
 
 export async function sendMessage(req, res) {
-  console.log(req.file());
-  /*const { content, convId, userId, author } = req.body;*/
+  const { content, convId, userId, author, file } = req.body;
+  const uploadedFile = JSON.parse(file.value);
+  const uri = uploadedFile.uri;
+  console.log(uploadedFile);
 
   try {
-    /*let imageFileName = null;
-
-    if (req.file) {
-      imageFileName = `${uuidv4()}${req.file.originalname.slice(req.file.originalname.lastIndexOf('.'))}`;
-
-      const destination = `../uploads/${imageFileName}`;
-      await req.file.mv(destination);
-    }
-
     const result = await req.server.pg.query(
       `INSERT INTO "message" ("content", "convId", "userId", "author", "link", "updatedAt")
        VALUES ($1, $2, $3, $4, $5, now()) RETURNING "id", "content", "convId", "userId", "author", "link", "updatedAt";`,
-      [content, convId, userId, author, imageFileName]
+      [content.value, convId.value, userId.value, author.value, uri]
     );
 
     const io = getSocketIOInstance();
     io.to(convId).emit('newMessage', result.rows[0]);
 
-    res.send({ message: result.rows[0] });*/
-  res.send({heelo: 'there'});
+    res.send({ message: result.rows[0] });
   } catch (err) {
     res.send({ error: err });
   }

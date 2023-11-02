@@ -10,10 +10,9 @@ import {
   View,
   Image,
 } from 'react-native';
-import * as ImagePicker from 'expo-image-picker'; // Importer depuis Expo ImagePicker
+import * as ImagePicker from 'expo-image-picker';
 import io from 'socket.io-client';
 import config from '../config.json';
-import { handleLoginSuccess, makeLoginRequest } from '../api/SignInApi';
 import { handleLoginError } from '../utils/ErrorController';
 import { check } from '../utils/CheckUserInfo';
 import { timeNormalize } from '../utils/timeHandler';
@@ -26,7 +25,6 @@ export default function ({ route, navigation }) {
   const socketUrlMyIp = config.socketUrlMyIp;
   const [user, setUser] = useState({});
   const apiUrlMyIp = config.apiUrlMyIp;
-  const scrollViewRef = useRef();
 
   useEffect(() => {
     check().then((result) => {
@@ -63,43 +61,30 @@ export default function ({ route, navigation }) {
   }, []);
 
   const selectImage = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
-      alert('La permission d\'accéder à la bibliothèque de médias est requise.');
-      return;
-    }
-
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+    })
 
-    if (!result.cancelled) {
-      setSelectedImage(result);
+    if (!result.canceled) {
+      setSelectedImage(result.assets[0]);
     }
-  };
+  }
 
   const handleSubmit = async () => {
     try {
       const formData = new FormData();
-      formData.append('content', content);
       formData.append('convId', conversationId);
       formData.append('userId', user.id);
       formData.append('author', user.name);
-
-      if (selectedImage) {
-        formData.append('image', {
-          uri: selectedImage.uri,
-          type: 'image/jpeg',
-          name: 'image.jpg',
-        });
-      }
+      formData.append('content', content);
+      formData.append('file', JSON.stringify(selectedImage));
 
       const response = await fetch(`${apiUrlMyIp}/send-message`, {
         method: 'POST',
         body: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        }
       });
 
       if (!response.ok) {
@@ -107,7 +92,7 @@ export default function ({ route, navigation }) {
       }
 
       setContent('');
-      setSelectedImage(null);
+      setSelectedImage({});
 
       return response.json();
     } catch (error) {

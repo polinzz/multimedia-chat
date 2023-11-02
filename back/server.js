@@ -25,7 +25,6 @@ fastify.register(fastifyPostgres, {
 
 fastify.register(fastifyMultipart, {
   attachFieldsToBody: true,
-  sharedSchemaId: '#imageForm',
 });
 
 fastify.register(userRoute);
