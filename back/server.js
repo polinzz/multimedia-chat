@@ -8,6 +8,7 @@ import cors from '@fastify/cors';
 import config from './config.json' assert { type: 'json' };
 import http from 'http';
 import { initializeSocketIO } from './socket.js';
+import fastifyMultipart from 'fastify-multipart';
 
 const hostMyIp = config.hostMyIp;
 const fastify = Fastify({
@@ -20,6 +21,10 @@ fastify.register(cors, {
 
 fastify.register(fastifyPostgres, {
   connectionString: 'postgres://user:password@127.0.0.1:5432/CHAT',
+});
+
+fastify.register(fastifyMultipart, {
+  attachFieldsToBody: true,
 });
 
 fastify.register(userRoute);

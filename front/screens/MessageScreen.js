@@ -1,8 +1,9 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, FlatList, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {FlatList, Image, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import io from 'socket.io-client';
 import config from '../config.json';
-import {handleLoginSuccess, makeLoginRequest} from "../api/SignInApi";
+import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
 import {handleLoginError} from "../utils/ErrorController";
 import {check} from "../utils/CheckUserInfo";
 import {timeNormalize} from '../utils/timeHandler';
@@ -14,7 +15,63 @@ export default function ({ route, navigation }) {
   const socketUrlMyIp = config.socketUrlMyIp;
   const [user, setUser] = useState({});
   const apiUrlMyIp = config.apiUrlMyIp;
-  const scrollViewRef = useRef();
+  const imgDir = FileSystem.documentDirectory + 'images/';
+  const [uploading, setUploading] = useState(false);
+  const [images, setImages] = useState([]);
+  const [selectedImage, setSelectedImage] = useState({});
+
+  const ensureDirExists = async () => {
+    const dirInfo = await FileSystem.getInfoAsync(imgDir);
+    if (!dirInfo.exists) {
+      await FileSystem.makeDirectoryAsync(imgDir, { intermediates: true });
+    }
+  };
+
+  const selectImage = async () => {
+    let result;
+    const options = {
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      aspect: [4, 3],
+      quality: 0.75
+    };
+
+    result = await ImagePicker.launchImageLibraryAsync(options);
+
+    if (!result.canceled) {
+      await saveImage(result.assets[0].uri)
+    }
+  };
+
+  const saveImage = async (uri) => {
+    await ensureDirExists();
+    const filename = new Date().getTime() + '.jpeg';
+    const dest = imgDir + filename;
+    await FileSystem.copyAsync({ from: uri, to: dest });
+    setSelectedImage({uri: uri, filename: nameNormalize(uri)});
+    setImages([...images, dest]);
+  };
+
+  const nameNormalize = (uri) => {
+    const parts = uri.split('/');
+    return parts[parts.length - 1]
+  }
+
+  const uploadImage = async (uri) => {
+    setUploading(true);
+
+    await FileSystem.uploadAsync(`${apiUrlMyIp}/upload`, uri, {
+      httpMethod: 'POST',
+      uploadType: FileSystem.FileSystemUploadType.MULTIPART,
+      fieldName: 'file',
+    });
+
+    setUploading(false);
+  };
+
+  const deleteImage = async (uri) => {
+    await FileSystem.deleteAsync(uri);
+    setImages(images.filter((i) => i !== uri));
+  };
 
   useEffect(() => {
     check().then(result => {
@@ -61,15 +118,26 @@ export default function ({ route, navigation }) {
           content: content,
           convId: conversationId,
           userId: user.id,
-          author: user.name
+          author: user.name,
+          link: selectedImage.filename ?? ''
         }),
       });
+
+
+      if (selectedImage.uri) {
+        console.log(selectedImage);
+        await uploadImage(selectedImage.uri);
+      }
 
       if (!response.ok) {
         throw new Error(`Reponse HTTP : ${response.status}`);
       }
 
       setContent("");
+      if (selectedImage.uri) {
+        await deleteImage(selectedImage.uri);
+        setSelectedImage({});
+      }
 
       return response.json();
     } catch (error) {
@@ -98,6 +166,10 @@ export default function ({ route, navigation }) {
         ref={(ref) => (flatListRef = ref)}
         onContentSizeChange={() => flatListRef.scrollToEnd({ animated: true })}
       />
+
+      {selectedImage && (
+        <Image source={{ uri: selectedImage.uri }} style={styles.selectedImage} />
+      )}
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -106,6 +178,9 @@ export default function ({ route, navigation }) {
           value={content}
           onChangeText={setContent}
         />
+        <TouchableOpacity onPress={selectImage} style={styles.selectImageButton}>
+          <Text style={styles.selectImageButtonText}>Sélectionner une image</Text>
+        </TouchableOpacity>
         <TouchableOpacity onPress={() => handleSubmit()} style={styles.sendButton}>
           <Text style={styles.sendButtonText}>Envoyer</Text>
         </TouchableOpacity>
@@ -186,6 +261,20 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'flex-end',
     justifyContent: 'flex-end',
+  },
+  selectImageButton: {
+    backgroundColor: '#F3B852',
+    borderRadius: 25,
+    padding: 10,
+  },
+  selectImageButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  selectedImage: {
+    width: 100,
+    height: 100,
+    margin: 10,
   },
 });
 
