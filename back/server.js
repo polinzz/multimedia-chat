@@ -9,6 +9,8 @@ import config from './config.json' assert { type: 'json' };
 import http from 'http';
 import { initializeSocketIO } from './socket.js';
 import fastifyMultipart from 'fastify-multipart';
+import fastifyStatic from '@fastify/static';
+import path from 'path';
 
 const hostMyIp = config.hostMyIp;
 const fastify = Fastify({
@@ -26,6 +28,8 @@ fastify.register(fastifyPostgres, {
 fastify.register(fastifyMultipart, {
   attachFieldsToBody: true,
 });
+
+fastify.register(fastifyStatic, {   root: path.join(process.cwd(), 'uploads'),   prefix: '/uploads/', });
 
 fastify.register(userRoute);
 fastify.register(convRoute);

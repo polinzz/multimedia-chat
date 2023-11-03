@@ -139,7 +139,7 @@ export default function ({ route, navigation }) {
         setSelectedImage({});
       }
 
-      return response.json();
+      return response.json()
     } catch (error) {
       handleLoginError(error);
     }
@@ -154,9 +154,14 @@ export default function ({ route, navigation }) {
             {message.author !== user.name && (
               <Text style={styles.authorName}>{message.author}</Text>
             )}
-            <Text style={message.author === user.name ? styles.userMessage : styles.otherMessage}>
-              {message.content}
-            </Text>
+            {message.link && (
+              <Image source={{ uri: `${apiUrlMyIp}/uploads/${message.link}` }} style={styles.selectedImage} />
+            )}
+            {message.content && (
+              <Text style={message.author === user.name ? styles.userMessage : styles.otherMessage}>
+                {message.content}
+              </Text>
+            )}
             <Text style={message.author === user.name ? styles.userDate : styles.otherDate}>
               {timeNormalize(message.updatedAt, 'message')}
             </Text>
@@ -167,9 +172,6 @@ export default function ({ route, navigation }) {
         onContentSizeChange={() => flatListRef.scrollToEnd({ animated: true })}
       />
 
-      {selectedImage && (
-        <Image source={{ uri: selectedImage.uri }} style={styles.selectedImage} />
-      )}
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
