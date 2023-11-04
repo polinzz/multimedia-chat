@@ -1,8 +1,8 @@
-import React, {useEffect, useState} from 'react';
-import {FlatList, StyleSheet, Text, TouchableOpacity, SafeAreaView, Image} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { FlatList, StyleSheet, Text, TouchableOpacity, SafeAreaView, Image, View } from 'react-native';
 import config from '../config.json';
-import {check} from '../utils/CheckUserInfo'
-import {timeNormalize} from '../utils/timeHandler'
+import { check } from '../utils/CheckUserInfo';
+import { timeNormalize } from '../utils/timeHandler';
 import { useIsFocused } from '@react-navigation/native';
 
 export default function ({ navigation }) {
@@ -15,13 +15,13 @@ export default function ({ navigation }) {
       check().then(result => {
         if (!result) {
           navigation.replace("SingIn");
-          return
+          return;
         }
         let user = JSON.parse(result);
         fetch(`${apiUrlMyIp}/get-all-conv-by-user/${user.id}`)
           .then((response) => {
             if (!response.ok) {
-              throw new Error(`Reponse HTTP : ${response.status}`);
+              throw new Error(`Réponse HTTP : ${response.status}`);
             }
             return response.json();
           })
@@ -47,25 +47,31 @@ export default function ({ navigation }) {
                 conversationId: item.id,
               });
             }}
+            style={styles.conversationItem}
           >
-            <Text style={styles.conversationName}>{item.name}</Text>
-            {item.content !== null &&
-              <Text style={styles.conversationContent}>{item.content}</Text>
-            }
-            {item.updatedAt !== null &&
-              <Text style={styles.conversationContent}>{timeNormalize(item.updatedAt, 'conv')}</Text>
-            }
-            <Text style={styles.conversationSeparator}>--------------------------</Text>
+            <View style={styles.conversationDetails}>
+              <Text style={styles.conversationName}>{item.name}</Text>
+              {item.content !== null && (
+                <View style={styles.nameContentContainer}>
+                  <Text style={styles.conversationContent}>
+                    {item.content.length > 30 ? item.content.slice(0, 30) + '...' : item.content}
+                  </Text>
+                  {item.updatedAt !== null && (
+                    <Text style={styles.updatedAt}>{timeNormalize(item.updatedAt, 'conv')}</Text>
+                  )}
+                </View>
+              )}
+            </View>
           </TouchableOpacity>
         )}
       />
       <TouchableOpacity
         style={styles.touchable}
         onPress={() => {
-            navigation.navigate('Nouvelle conversation');
+          navigation.navigate('Nouvelle conversation');
         }}>
         <Image style={styles.tinyLogo}
-          source={require('../assets/Frame.png')}
+               source={require('../assets/add_circle_fill.png')}
         />
       </TouchableOpacity>
     </SafeAreaView>
@@ -73,32 +79,41 @@ export default function ({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-  },
   tinyLogo: {
     left: 290,
-    width: 55,
-    height: 55,
+    width: 65,
+    height: 65,
     borderRadius: 400,
     bottom: 10,
     marginTop: 20,
   },
-  header: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 16,
+  container: {
+    flex: 1,
+    padding: 16,
+  },
+  conversationItem: {
+    borderBottomWidth: 1,
+    borderColor: '#ccc',
+    paddingVertical: 10,
+  },
+  conversationDetails: {
+    flex: 1,
+  },
+  nameContentContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 6,
   },
   conversationName: {
-    fontSize: 20,
-    marginBottom: 8,
+    fontSize: 22,
+  },
+  updatedAt: {
+    fontSize: 12,
+    color: 'gray',
   },
   conversationContent: {
     fontSize: 16,
     marginBottom: 6,
-  },
-  conversationSeparator: {
-    marginBottom: 12,
   },
 });

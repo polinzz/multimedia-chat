@@ -184,12 +184,12 @@ export default function ({ route, navigation }) {
           value={content}
           onChangeText={setContent}
         />
-        <TouchableOpacity onPress={selectImage}>
+        <TouchableOpacity onPress={selectImage} style={styles.logoContainer}>
           <Image style={styles.tinyLogo}
-                 source={require('../assets/attachment_line.png')}
+                 source={require('../assets/attachment_fill.png')}
           />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleSubmit()} style={styles.sendButton}>
+        <TouchableOpacity onPress={() => handleSubmit()}>
           <Image style={styles.tinyLogo}
                  source={require('../assets/send_plane_fill.png')}
           />
@@ -255,10 +255,6 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 10,
   },
-  sendButton: {
-    borderRadius: 25,
-    padding: 10,
-  },
   sendButtonText: {
     color: 'white',
     fontWeight: 'bold',
@@ -279,6 +275,13 @@ const styles = StyleSheet.create({
     height: 100,
     margin: 10,
   },
+  tinyLogo: {
+    width: 29,
+    height: 29,
+  },
+  logoContainer: {
+    paddingRight: 8,
+  }
 });
 
 
