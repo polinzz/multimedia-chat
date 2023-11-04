@@ -139,7 +139,7 @@ export default function ({ route, navigation }) {
         setSelectedImage({});
       }
 
-      return response.json()
+      return response.json();
     } catch (error) {
       handleLoginError(error);
     }
@@ -172,6 +172,10 @@ export default function ({ route, navigation }) {
         onContentSizeChange={() => flatListRef.scrollToEnd({ animated: true })}
       />
 
+      {selectedImage && (
+        <Image source={{ uri: selectedImage.uri }} style={styles.selectedImage} />
+      )}
+
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -180,11 +184,15 @@ export default function ({ route, navigation }) {
           value={content}
           onChangeText={setContent}
         />
-        <TouchableOpacity onPress={selectImage} style={styles.selectImageButton}>
-          <Text style={styles.selectImageButtonText}>Sélectionner une image</Text>
+        <TouchableOpacity onPress={selectImage}>
+          <Image style={styles.tinyLogo}
+                 source={require('../assets/attachment_line.png')}
+          />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => handleSubmit()} style={styles.sendButton}>
-          <Text style={styles.sendButtonText}>Envoyer</Text>
+          <Image style={styles.tinyLogo}
+                 source={require('../assets/send_plane_fill.png')}
+          />
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -248,7 +256,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   sendButton: {
-    backgroundColor: '#F3B852',
     borderRadius: 25,
     padding: 10,
   },
@@ -265,13 +272,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   selectImageButton: {
-    backgroundColor: '#F3B852',
-    borderRadius: 25,
     padding: 10,
-  },
-  selectImageButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
   },
   selectedImage: {
     width: 100,
