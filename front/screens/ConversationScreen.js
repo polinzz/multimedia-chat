@@ -4,6 +4,7 @@ import config from '../config.json';
 import { check } from '../utils/CheckUserInfo';
 import { timeNormalize } from '../utils/timeHandler';
 import { useIsFocused } from '@react-navigation/native';
+import { colors } from '../assets/style/StylesGlobal';
 
 export default function ({ navigation }) {
   const apiUrlMyIp = config.apiUrlMyIp;
@@ -43,24 +44,28 @@ export default function ({ navigation }) {
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate('Messages', {
+              navigation.navigate("Messages", {
                 conversationId: item.id,
               });
             }}
             style={styles.conversationItem}
           >
             <View style={styles.conversationDetails}>
-              <Text style={styles.conversationName}>{item.name}</Text>
-              {item.content !== null && (
-                <View style={styles.nameContentContainer}>
-                  <Text style={styles.conversationContent}>
-                    {item.content.length > 30 ? item.content.slice(0, 30) + '...' : item.content}
-                  </Text>
-                  {item.updatedAt !== null && (
-                    <Text style={styles.updatedAt}>{timeNormalize(item.updatedAt, 'conv')}</Text>
-                  )}
-                </View>
+              <View style={styles.nameContentContainer}>
+                <Text style={styles.conversationName}>{item.name}</Text>
+                {item.updatedAt !== null && (
+                <Text style={styles.updatedAt}>
+                  {timeNormalize(item.updatedAt, "conv")}
+                </Text> 
               )}
+              </View>
+              {item.content !== null && (
+                  <Text style={styles.conversationContent}>
+                    {item.content.length > 30
+                      ? item.content.slice(0, 30) + "..."
+                      : item.content}
+                  </Text>
+                )}
             </View>
           </TouchableOpacity>
         )}
@@ -68,10 +73,12 @@ export default function ({ navigation }) {
       <TouchableOpacity
         style={styles.touchable}
         onPress={() => {
-          navigation.navigate('Nouvelle conversation');
-        }}>
-        <Image style={styles.tinyLogo}
-               source={require('../assets/add_circle_fill.png')}
+          navigation.navigate("Nouvelle conversation");
+        }}
+      >
+        <Image
+          style={styles.tinyLogo}
+          source={require("../assets/images/addConv.png")}
         />
       </TouchableOpacity>
     </SafeAreaView>
@@ -79,38 +86,39 @@ export default function ({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  touchable: {
+    bottom: 24,
+  },
   tinyLogo: {
-    left: 290,
     width: 65,
     height: 65,
     borderRadius: 400,
-    bottom: 10,
-    marginTop: 20,
+    left: '100%',
+    transform: [{ translateX: -80 }], 
   },
   container: {
     flex: 1,
     padding: 16,
+    backgroundColor: colors.background,
   },
   conversationItem: {
-    borderBottomWidth: 1,
-    borderColor: '#ccc',
-    paddingVertical: 10,
+    paddingVertical: 16,
   },
   conversationDetails: {
     flex: 1,
   },
   nameContentContainer: {
+    marginBottom: 4,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 6,
-  },
+  }, 
   conversationName: {
-    fontSize: 22,
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   updatedAt: {
-    fontSize: 12,
-    color: 'gray',
+    fontSize: 14,
   },
   conversationContent: {
     fontSize: 16,

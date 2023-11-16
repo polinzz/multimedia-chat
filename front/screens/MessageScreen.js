@@ -7,6 +7,7 @@ import * as FileSystem from 'expo-file-system';
 import {handleLoginError} from "../utils/ErrorController";
 import {check} from "../utils/CheckUserInfo";
 import {timeNormalize} from '../utils/timeHandler';
+import {colors} from "../assets/style/StylesGlobal";
 
 export default function ({ route, navigation }) {
   const {conversationId} = route.params;
@@ -150,20 +151,41 @@ export default function ({ route, navigation }) {
       <FlatList
         data={messages}
         renderItem={({ item: message }) => (
-          <View style={message.author === user.name ? styles.userMessageContainer : styles.otherMessageContainer}>
+          <View
+            style={
+              message.author === user.name
+                ? styles.userMessageContainer
+                : styles.otherMessageContainer
+            }
+          >
             {message.author !== user.name && (
               <Text style={styles.authorName}>{message.author}</Text>
             )}
             {message.link && (
-              <Image source={{ uri: `${apiUrlMyIp}/uploads/${message.link}` }} style={styles.selectedImage} />
+              <Image
+                source={{ uri: `${apiUrlMyIp}/uploads/${message.link}` }}
+                style={styles.selectedImage}
+              />
             )}
             {message.content && (
-              <Text style={message.author === user.name ? styles.userMessage : styles.otherMessage}>
+              <Text
+                style={
+                  message.author === user.name
+                    ? styles.userMessage
+                    : styles.otherMessage
+                }
+              >
                 {message.content}
               </Text>
             )}
-            <Text style={message.author === user.name ? styles.userDate : styles.otherDate}>
-              {timeNormalize(message.updatedAt, 'message')}
+            <Text
+              style={
+                message.author === user.name
+                  ? styles.userDate
+                  : styles.otherDate
+              }
+            >
+              {timeNormalize(message.updatedAt, "message")}
             </Text>
           </View>
         )}
@@ -173,27 +195,32 @@ export default function ({ route, navigation }) {
       />
 
       {selectedImage && (
-        <Image source={{ uri: selectedImage.uri }} style={styles.selectedImage} />
+        <Image
+          source={{ uri: selectedImage.uri }}
+          style={styles.selectedImage}
+        />
       )}
 
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
           multiline={true}
-          placeholder="Message"
+          placeholder="Message..."
           value={content}
           onChangeText={setContent}
         />
-        <TouchableOpacity onPress={selectImage} style={styles.logoContainer}>
-          <Image style={styles.tinyLogo}
-                 source={require('../assets/attachment_fill.png')}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleSubmit()}>
-          <Image style={styles.tinyLogo}
-                 source={require('../assets/send_plane_fill.png')}
-          />
-        </TouchableOpacity>
+        {content.length > 0 ? (
+          <TouchableOpacity onPress={() => handleSubmit()}>
+            <Text>Envoyer</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity onPress={selectImage} style={styles.logoContainer}>
+            <Image
+              style={styles.tinyLogo}
+              source={require("../assets/images/image-send.png")}
+            />
+          </TouchableOpacity>
+        )}
       </View>
     </SafeAreaView>
   );
@@ -204,6 +231,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     justifyContent: 'flex-end',
+    backgroundColor: colors.background,
   },
   userMessageContainer: {
     alignSelf: 'flex-end',
@@ -218,16 +246,33 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   userMessage: {
-    backgroundColor: '#F3B852',
-    padding: 10,
-    borderRadius: 8,
     maxWidth: '70%',
+    backgroundColor: colors.orangeLight, 
+    borderColor: colors.orangeLight,
+    color: colors.grey,
+    borderWidth: 1,
+    paddingLeft: 16,
+    paddingRight: 16, 
+    paddingTop: 12,
+    paddingBottom: 12,
+    borderTopLeftRadius: 12, 
+    borderTopRightRadius: 12,
+    borderBottomRightRadius: 4,
+    borderBottomLeftRadius: 12,
   },
   otherMessage: {
-    backgroundColor: '#E5E5E5',
-    padding: 10,
-    borderRadius: 8,
     maxWidth: '70%',
+    borderColor: colors.orangeLight,
+    color: colors.grey,
+    borderWidth: 1,
+    paddingLeft: 16,
+    paddingRight: 16, 
+    paddingTop: 12,
+    paddingBottom: 12,
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+    borderBottomRightRadius: 12,
+    borderBottomLeftRadius: 4,
   },
   userDate: {
     color: 'gray',
@@ -245,10 +290,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: 'white',
     padding: 10,
-    borderRadius: 25,
+    borderRadius: 90,
     marginVertical: 10,
+    borderColor: colors.greyDark,
+    borderWidth: 0.5,
   },
   input: {
     flex: 1,
@@ -258,7 +304,7 @@ const styles = StyleSheet.create({
   sendButtonText: {
     color: 'white',
     fontWeight: 'bold',
-  },
+  }, 
   messageContainer: {
     flex: 1,
     paddingHorizontal: 10,

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import {colors} from "../assets/style/StylesGlobal";
 import {
   View,
   Text,
@@ -59,6 +60,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 20,
+    backgroundColor: colors.background,
   },
   titlePage: {
     fontSize: 40,
@@ -74,13 +76,13 @@ const styles = StyleSheet.create({
   },
   input: {
     padding: 10,
-    backgroundColor: "#E5E5E5",
+    backgroundColor: "#F3F3F3",
     width: '100%',
     borderRadius: 8,
     marginBottom: 20,
   },
   appButtonContainer: {
-    backgroundColor: "#F3B852",
+    backgroundColor: colors.primary,
     borderRadius: 8,
     paddingVertical: 12,
     marginTop:40,

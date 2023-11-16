@@ -15,6 +15,7 @@ import {
 import * as SecureStore from 'expo-secure-store';
 import { check } from '../utils/CheckUserInfo';
 import config from '../config.json';
+import {colors} from "../assets/style/StylesGlobal";
 
 const ConversationScreen = ({ navigation }) => {
   const [selectedUsers, setSelectedUsers] = useState([]);
@@ -87,8 +88,8 @@ const ConversationScreen = ({ navigation }) => {
     <TouchableWithoutFeedback onPress={() => toggleUserSelection(item.id)}>
       {item.id !== loggedInUser &&
         <View style={styles.item}>
-          <Text style={styles.itemText}>{item.name}</Text>
           <View style={[styles.selectionCircle, { backgroundColor: selectedUsers.includes(item.id) ? '#FF9F2D' : 'transparent' }]} />
+          <Text style={styles.itemText}>{item.name}</Text>
         </View>
       }
     </TouchableWithoutFeedback>
@@ -96,57 +97,63 @@ const ConversationScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View>
+      <View style={styles.conversationName}>
         <Text style={styles.text}>Nom de la conversation</Text>
         <TextInput
           style={styles.input}
           placeholder="Nom de la conversation..."
           value={conversationName}
-          onChangeText={text => setConversationName(text)}
+          onChangeText={(text) => setConversationName(text)}
+          placeholderTextColor={colors.greyLight}
         />
       </View>
       <View>
         <Text style={styles.text}>Contacts</Text>
       </View>
-      <FlatList data={users} renderItem={renderItem} keyExtractor={(item) => item.id.toString()} />
+      <FlatList
+        data={users}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id.toString()}
+        style={styles.list}
+      />
       {/*<View style={styles.buttonContainer}>
         <Button title="Créer la conversation" onPress={() => handleSubmit()} />
       </View>*/}
-      <TouchableOpacity
-        style={styles.touchable}
-        onPress={() => handleSubmit()}>
-        <Image style={styles.tinyLogo}
-               source={require('../assets/Frame.png')}
+      <TouchableOpacity style={styles.touchable} onPress={() => handleSubmit()}>
+        <Image
+          style={styles.tinyLogo}
+          source={require("../assets/images/Frame.png")}
         />
       </TouchableOpacity>
     </SafeAreaView>
-
   );
 };
 const styles = StyleSheet.create({
-  scrollView: {
-    marginHorizontal: 20,
-  },
-  buttonContainer: {
+  conversationName: {
     marginBottom: 20,
+    marginTop: 16,
+  },
+  touchable: {
+    bottom: 24,
   },
   tinyLogo: {
-    left: 290,
-    width: 55,
-    height: 55,
+    width: 65,
+    height: 65, 
     borderRadius: 400,
-    bottom: 10,
-    marginTop: 20,
-  },
+    left: '100%',
+    transform: [{ translateX: -80 }], 
+  }, 
   container: {
     flex: 1,
-    margin: 16,
+    padding: 16,
+    backgroundColor: colors.background
   },
   item: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
+    paddingBottom: 16,
+    paddingTop: 16,
+    gap: 12,
   },
   itemText: {
     fontSize: 16,
@@ -156,18 +163,20 @@ const styles = StyleSheet.create({
     height: 20,
     borderRadius: 10,
     borderWidth: 2,
-    borderColor: '#FF9F2D',
+    borderColor: colors.primary,
   },
   text: {
     fontSize: 20,
     marginBottom: 8,
   },
   input: {
-    height: 40,
-    borderWidth: 1,
+    // height: 40,
+    borderWidth: 0.5,
     marginBottom: 16,
-    padding: 10,
-    borderRadius: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 8,
+    borderColor: colors.greyDark
   },
 });
 
