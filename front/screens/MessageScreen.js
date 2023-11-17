@@ -209,16 +209,15 @@ export default function ({ route, navigation }) {
           value={content}
           onChangeText={setContent}
         />
-        {content.length > 0 ? (
+        <TouchableOpacity onPress={selectImage} style={styles.logoContainer}>
+          <Image
+            style={styles.tinyLogo}
+            source={require("../assets/images/image-send.png")}
+          />
+        </TouchableOpacity>
+        {(content.length > 0 || selectedImage.uri) && (
           <TouchableOpacity onPress={() => handleSubmit()}>
             <Text>Envoyer</Text>
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity onPress={selectImage} style={styles.logoContainer}>
-            <Image
-              style={styles.tinyLogo}
-              source={require("../assets/images/image-send.png")}
-            />
           </TouchableOpacity>
         )}
       </View>
@@ -247,15 +246,15 @@ const styles = StyleSheet.create({
   },
   userMessage: {
     maxWidth: '70%',
-    backgroundColor: colors.orangeLight, 
+    backgroundColor: colors.orangeLight,
     borderColor: colors.orangeLight,
     color: colors.grey,
     borderWidth: 1,
     paddingLeft: 16,
-    paddingRight: 16, 
+    paddingRight: 16,
     paddingTop: 12,
     paddingBottom: 12,
-    borderTopLeftRadius: 12, 
+    borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
     borderBottomRightRadius: 4,
     borderBottomLeftRadius: 12,
@@ -266,7 +265,7 @@ const styles = StyleSheet.create({
     color: colors.grey,
     borderWidth: 1,
     paddingLeft: 16,
-    paddingRight: 16, 
+    paddingRight: 16,
     paddingTop: 12,
     paddingBottom: 12,
     borderTopLeftRadius: 12,
@@ -304,7 +303,7 @@ const styles = StyleSheet.create({
   sendButtonText: {
     color: 'white',
     fontWeight: 'bold',
-  }, 
+  },
   messageContainer: {
     flex: 1,
     paddingHorizontal: 10,
