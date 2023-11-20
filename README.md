@@ -19,7 +19,7 @@ HetChat is an innovative mobile application developed by students from HETIC. Th
 ## Features
 - User authentication
 - Create conversations with one or more participants
-- Sending text messages, images and videos
+- Sending text messages and images
 
 ## GIT process
 ### Merge feature branch into develop
