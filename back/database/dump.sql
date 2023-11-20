@@ -42,7 +42,7 @@ ALTER TABLE
     "conversationUser" ADD CONSTRAINT "conversationusers_convid_foreign" FOREIGN KEY("convId") REFERENCES "conversation"("id");
 
 INSERT INTO "user" ("pwd", "name", "profilePic", "email")
-VALUES ('az', 'Pauline', '', 'pauline@mail.com');
+VALUES ('az', 'Pauline', '', 'pauli');
 
 INSERT INTO "user" ("pwd", "name", "profilePic", "email")
 VALUES ('az', 'Adrien', '', 'adri');
@@ -87,16 +87,16 @@ INSERT INTO "user" ("pwd", "name", "profilePic", "email")
 VALUES ('az', 'FakeUser9', '', 'fakeuser9@mail.com');
 
 INSERT INTO "conversation" ("name", "adminId", "updatedAt" )
-VALUES ('conv1', 2, now());
+VALUES ('Planification Week-end', 2, now());
 
 INSERT INTO "conversation" ("name", "adminId", "updatedAt" )
-VALUES ('conv2', 2, now());
+VALUES ('Projets', 2, now());
 
 INSERT INTO "conversation" ("name", "adminId", "updatedAt" )
-VALUES ('conv3', 2, now());
+VALUES ('Actualités du Jour', 2, now());
 
 INSERT INTO "conversation" ("name", "adminId", "updatedAt" )
-VALUES ('adri-paupau', 2, now());
+VALUES ('Café des Amis', 2, now());
 
 INSERT INTO "conversationUser" ("convId", "userId")
 VALUES (2, 2);
@@ -114,44 +114,27 @@ INSERT INTO "conversationUser" ("convId", "userId")
 VALUES (4, 1);
 
 INSERT INTO "message" ("content", "convId", "userId", "updatedAt", "author")
-VALUES ('content1Conv1', 2, 2, now(), 'Adrien');
+VALUES ('Salut ca va', 1, 2, now(), 'Adrien');
 INSERT INTO "message" ("content", "convId", "userId", "updatedAt", "author")
-VALUES ('content2Conv1', 2, 2, now(), 'Adrien');
+VALUES ('he ho, tu reponds', 1, 2, now(), 'Adrien');
 
 INSERT INTO "message" ("content", "convId", "userId", "updatedAt", "author")
-VALUES ('content1Conv2', 3, 2, now(), 'Adrien');
+VALUES ('Salut ca va', 2, 2, now(), 'Adrien');
 INSERT INTO "message" ("content", "convId", "userId", "updatedAt", "author")
-VALUES ('content2Conv2', 3, 2, now(), 'Adrien');
+VALUES ('he ho, tu reponds', 2, 2, now(), 'Adrien');
 
 INSERT INTO "message" ("content", "convId", "userId", "updatedAt", "author")
-VALUES ('Hi Barbie', 4, 2, now(), 'Adrien');
+VALUES ('Salut salut', 3, 2, now(), 'Adrien');
 INSERT INTO "message" ("content", "convId", "userId", "updatedAt", "author")
-VALUES ('Hi Ken', 4, 1, now(), 'Pauline');
-INSERT INTO "message" ("content", "convId", "userId", "updatedAt", "author")
-VALUES ('Ho you touch my tralala', 4, 2, now(), 'Adrien');
-INSERT INTO "message" ("content", "convId", "userId", "updatedAt", "author")
-VALUES ('My ding ding dong', 4, 1, now(), 'Pauline');
+VALUES ('t es la ?', 3, 2, now(), 'Adrien');
 
-SELECT DISTINCT ON (c."id") m."convId", m.content, c."name", c."id", c."adminId", m."updatedAt"
-FROM "conversation" AS c
-    LEFT JOIN "message" as m ON m."convId" = c."id"
-    LEFT JOIN "message" as m2 ON m."convId" = c."id"
-    AND m."updatedAt" >= m2."updatedAt"
-    AND m."id" <> m2."id"
-WHERE c.id IN(SELECT "convId" FROM "conversationUser" WHERE "userId" = 2)
-ORDER BY c."id" DESC;
+INSERT INTO "message" ("content", "convId", "userId", "updatedAt", "author")
+VALUES ('Salut ! Nouveau café en ville !!', 4, 2, now(), 'Adrien');
+INSERT INTO "message" ("content", "convId", "userId", "updatedAt", "author")
+VALUES ('Ça marche, samedi à 15h ?', 4, 1, now(), 'Pauline');
+INSERT INTO "message" ("content", "convId", "userId", "updatedAt", "author")
+VALUES ('Parfait ! On se retrouve là-bas.', 4, 2, now(), 'Adrien');
+INSERT INTO "message" ("content", "convId", "userId", "updatedAt", "author")
+VALUES ('Super, trop hâte !', 4, 1, now(), 'Pauline');
 
-SELECT c."id", c."name", c."adminId", m."content", m."updatedAt"
-FROM "conversation" AS c
-LEFT JOIN (
-    SELECT "content", "convId", "updatedAt"
-    FROM "message"
-    WHERE ("convId", "updatedAt") IN (
-        SELECT "convId", MAX("updatedAt")
-        FROM "message"
-        GROUP BY "convId"
-    )
-) AS m ON m."convId" = c."id"
-WHERE c."id" IN (SELECT "convId" FROM "conversationUser" WHERE "userId" = 2)
-ORDER BY m."updatedAt" DESC;
 

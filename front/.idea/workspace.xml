@@ -5,10 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="147c610b-d83e-4411-8631-a9f39c473f41" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../back/controller/userController.js" beforeDir="false" afterPath="$PROJECT_DIR$/../back/controller/userController.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../back/database/dump.sql" beforeDir="false" afterPath="$PROJECT_DIR$/../back/database/dump.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/screens/ContactScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/screens/ContactScreen.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/screens/MessageScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/screens/MessageScreen.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,7 +50,7 @@
       <option name="presentableId" value="Default" />
       <updated>1698162622952</updated>
       <workItem from="1698162624289" duration="9875000" />
-      <workItem from="1700468806356" duration="3035000" />
+      <workItem from="1700468806356" duration="3612000" />
     </task>
     <servers />
   </component>
