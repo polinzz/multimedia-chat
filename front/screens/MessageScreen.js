@@ -4,7 +4,6 @@ import io from 'socket.io-client';
 import config from '../config.json';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
-import {handleLoginError} from "../utils/ErrorController";
 import {check} from "../utils/CheckUserInfo";
 import {timeNormalize} from '../utils/timeHandler';
 import {colors} from "../assets/style/StylesGlobal";
@@ -142,7 +141,7 @@ export default function ({ route, navigation }) {
 
       return response.json();
     } catch (error) {
-      handleLoginError(error);
+      throw new Error(`error : ${error}`);
     }
   };
 

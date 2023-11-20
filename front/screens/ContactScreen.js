@@ -25,25 +25,22 @@ const ConversationScreen = ({ navigation }) => {
   const apiUrlMyIp = config.apiUrlMyIp;
 
   useEffect(() => {
-    const getLoggedInUserId = async () => {
-      check().then(result => {
-        if(!result) {
-          navigation.replace("SingIn");
-        }
-        setLoggedInUser(JSON.parse(result));
-      })
-    };
+    check().then(result => {
+      if (!result) {
+        navigation.replace("SingIn");
+      }
+      setLoggedInUser(JSON.parse(result));
+    })
 
-    getLoggedInUserId();
 
-    fetch(`${apiUrlMyIp}/getUser`)
-      .then(response => response.json())
-      .then(data => {
-        setUsers(data);
-      })
-      .catch(error => {
-        console.error(error);
-      });
+      fetch(`${apiUrlMyIp}/getUser`)
+        .then(response => response.json())
+        .then(data => {
+          setUsers(data);
+        })
+        .catch(error => {
+          console.error(error);
+        });
   }, []);
 
   const toggleUserSelection = (userId) => {
@@ -86,7 +83,7 @@ const ConversationScreen = ({ navigation }) => {
 
   const renderItem = ({ item }) => (
     <TouchableWithoutFeedback onPress={() => toggleUserSelection(item.id)}>
-      {item.id !== loggedInUser &&
+      {item.name !== loggedInUser &&
         <View style={styles.item}>
           <View style={[styles.selectionCircle, { backgroundColor: selectedUsers.includes(item.id) ? '#FF9F2D' : 'transparent' }]} />
           <Text style={styles.itemText}>{item.name}</Text>
@@ -111,10 +108,19 @@ const ConversationScreen = ({ navigation }) => {
         <Text style={styles.text}>Contacts</Text>
       </View>
       <FlatList
-        data={users}
-        renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
         style={styles.list}
+        data={users}
+        renderItem={({ item }) => (
+          <TouchableOpacity onPress={() => toggleUserSelection(item.id)}>
+            {item.id !== loggedInUser.id && (
+              <View style={styles.item}>
+                <View style={[styles.selectionCircle, { backgroundColor: selectedUsers.includes(item.id) ? '#FF9F2D' : 'transparent' }]} />
+                <Text style={styles.itemText}>{item.name}</Text>
+              </View>
+            )}
+          </TouchableOpacity>
+        )}
       />
       {/*<View style={styles.buttonContainer}>
         <Button title="Créer la conversation" onPress={() => handleSubmit()} />
@@ -138,11 +144,11 @@ const styles = StyleSheet.create({
   },
   tinyLogo: {
     width: 65,
-    height: 65, 
+    height: 65,
     borderRadius: 400,
     left: '100%',
-    transform: [{ translateX: -80 }], 
-  }, 
+    transform: [{ translateX: -80 }],
+  },
   container: {
     flex: 1,
     padding: 16,

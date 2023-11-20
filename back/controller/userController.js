@@ -20,13 +20,13 @@ export function signIn (req, res) {
   req.server.pg.query(
     'SELECT id, name, pwd,email FROM "user" where email=$1',
     [email.toLowerCase()],
-    function onResult(err, result) { 
+    function onResult(err, result) {
         if(err){
           res.send(err);
           return;
         }
 
-        if (result.rows[0].pwd === password) {
+        if ( result.rows && result.rows[0] && result.rows[0].pwd === password) {
           const token = {
             user: {
               id: result.rows[0].id,
@@ -36,7 +36,7 @@ export function signIn (req, res) {
           };
           res.send(token);
           return;
-        } 
+        }
         res.status(401).send({ error: 'Wrong credentials' })
       }
   );
