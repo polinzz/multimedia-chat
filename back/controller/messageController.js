@@ -36,7 +36,6 @@ export function upload(req, res) {
 
 export async function sendMessage(req, res) {
   const {content, convId, userId, author, link} = req.body;
-  console.log(req.body)
 
   try {
     const result = await req.server.pg.query(

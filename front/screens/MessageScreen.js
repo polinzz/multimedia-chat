@@ -125,7 +125,6 @@ export default function ({ route, navigation }) {
 
 
       if (selectedImage.uri) {
-        console.log(selectedImage);
         await uploadImage(selectedImage.uri);
       }
 

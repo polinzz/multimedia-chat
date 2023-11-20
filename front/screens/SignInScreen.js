@@ -28,7 +28,7 @@ export default function SignInScreen({ navigation, route }) {
     <SafeAreaView
       style={styles.pageStyle}
     >
-      <Text style={styles.titlePage}>Hechat</Text>
+      <Text style={styles.titlePage}>Hetchat</Text>
       <View style={styles.formContainer}>
         <Text style={styles.textTitleInput}>Email</Text>
         <TextInput
